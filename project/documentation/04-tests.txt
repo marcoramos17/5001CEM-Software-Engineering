@@ -2,6 +2,10 @@
 ##==============================[TESTS]==============================##
 (Documentation written by --)
 
+In the ../tests/ directory we can find some .py files that can be
+executed in order to test the main application
+
+P.S: So far no tests have been built
 
 ##==============================[TESTS]==============================##
 ##===================================================================##
