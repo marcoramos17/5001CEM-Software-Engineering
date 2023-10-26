@@ -1,0 +1,12 @@
+##==========================================================================##
+##==============================[SRC / SOURCE]==============================##
+(Documentation written by Marco Ramos)
+
+The following is a list of all the .py (python) files in the '/src' directory:
+- main.py       Main file to be executed in order for the program to run
+- accounts.py   All the account related code, including object oriented
+                programming
+- ..
+
+##==============================[SRC / SOURCE]==============================##
+##==========================================================================##
