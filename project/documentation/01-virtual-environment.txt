@@ -1,0 +1,25 @@
+##===================================================================##
+##=======================[VIRTUAL ENVIRONMENT]=======================##
+(Documentation written by Marco Ramos)
+
+Virtual Environments help us separate our python project from other
+python programs and applications, as such we decided to use them to
+help us prevent errors.
+
+#In order to set up the virtual environment we used the following
+#command (in Linux):
+$ python3 -m venv projectenv
+(projectenv is just the name we chose for our virtual environment)
+
+
+## TO ACTIVATE VIRTUAL ENVIRONMENT
+[Linux]
+$ source projectenv/bin/activate
+
+[Windows]
+> projectenv/Scripts/activate
+
+
+
+##=======================[VIRTUAL ENVIRONMENT]=======================##
+##===================================================================##

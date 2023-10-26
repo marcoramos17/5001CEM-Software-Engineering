@@ -1,0 +1,57 @@
+##==================================================================##
+##=======================[FILETREE STRUCTURE]=======================##
+(Documentation written by Marco Ramos)
+
+In order to simplify the development process we organized and
+structured our project's filetree. This helps us expand our project
+without causing confusion and allowing us to always know where files
+have been placed
+
+The structure goes as follows:
+
+5001CEM/
+    |_______.github/
+    |           |_______ISSUE_TEMPLATE/
+    |
+    |_______project/
+    |           |_______data/
+    |           |_______documentation/
+    |           |_______src/
+    |           |_______tests/
+    |
+    |_______projectenv/
+                |_______bin/
+                        |_______activate/
+
+(There are more files and directories but these are the main ones)
+
+[.github/ directory] contains some github related files, in this
+case it contains the .yml templates we use for our "issue" creation
+page, essentially they generate a form which can be filled and
+simplifies the creation of new issues, we've used this same template
+last year and it proved to be easier than to write it in markdown
+each time on our own.
+
+[project/ directory] The reason we created this directory instead of
+keeping all it's subdirectories in the main "5001CEM" directory is
+because it improves the appearance of our filetree and navigability,
+essentially it keeps our project more organized and makes it easier
+for developers and anyone else who may want to check the code to find
+what they're looking for
+
+[project/ subdirectories] We split our project into four main parts
+"data" as the name implies will include all data storage files, in
+our case, mainly databases
+"documentation" includes many .txt files that document our project
+"src" includes all our code and our project modules that we created
+"tests" will include files for testing our application 
+
+[projectenv/ directory] Is the directory for our virtual environment
+this allows us to run our application through a python virtual
+environment which should help us prevent bugs and incompatibilities
+caused by other python applications (for more information check
+documentation file #01) we can then activate the virtual environment
+through projectenv/bin/activate
+
+##=======================[FILETREE STRUCTURE]=======================##
+##==================================================================##
