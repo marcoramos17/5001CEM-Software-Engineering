@@ -1,17 +1,21 @@
-# For using the database
-# Tutorial on use at https://docs.python.org/3/library/sqlite3.html
+# API for using the database
+# Tutorial on use of sqlite3 in python can be found at: 
+#   https://docs.python.org/3/library/sqlite3.html
 import sqlite3
+
 # For using our password generation
 from password import *
+
 # For absolute file location
 import os.path
 
+# To print debug strings
 debug = True
 
 def sqlite3_init() -> tuple [sqlite3.Connection, sqlite3.Cursor]:
     # Get file path
     baseDir = os.path.dirname(os.path.abspath(__file__))
-    dbPath = os.path.join(baseDir, "db.db")
+    dbPath = os.path.join(baseDir, "../data/db.db")
     # Create a connection to our database
     db = sqlite3.connect(dbPath)
     # Create a cursor to do commands
@@ -71,8 +75,13 @@ def check_account_login(f_username: str,
 
 if __name__ == "__main__":
     try:
-        #create_student_account('Jimmy', 'Cricket', 'ilovepeas', '582874', '2020-12-30', 'London')
+        # Create an account example
+        # create_student_account('Jimmy', 'Cricket', 'ilovepeas', '582874', '2020-12-30', 'London')
+
+        # Check username/password combinations example
+        ## Correct password
         print(check_account_login('JimmCric582874', 'ilovepeas'))
+        ## Incorrect password
         print(check_account_login('JimmCric582874', 'ilovepeasWRONG'))
     except Exception as err:
         print("ERROR:\n", err)
