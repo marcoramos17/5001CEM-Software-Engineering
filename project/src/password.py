@@ -23,6 +23,10 @@ def hash_password(f_pwd: str, f_salt: str) -> bytes:
 # Example uses of the above functions
 
 if __name__ == "__main__":
+    print("Password file ran from main!\n"
+          "This file defines functions to generate salts\n"
+          "and hash passwords, it also shows how to use the\n"
+          "same function to check a password.\n")
     ## Create a constant salt for testing
     ex1_salt = generate_salt()
     ## Create our true hashed
