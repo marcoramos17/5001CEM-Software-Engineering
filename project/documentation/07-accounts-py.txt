@@ -1,0 +1,17 @@
+##=========================================================================##
+##==============================[ACCOUNTS.PY]==============================##
+(Documentation written by Marco Ramos)
+
+All or most of the code related to accounts can be found in'src/accounts.py'.
+It includes all the "object oriented programming" for the accounts as well
+as it's respective functions that allow for it to send or fetch data from
+the database.
+
+..
+
+
+REFERENCES:
+https://realpython.com/python3-object-oriented-programming/
+
+##==============================[ACCOUNTS.PY]==============================##
+##=========================================================================##
