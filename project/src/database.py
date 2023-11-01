@@ -43,12 +43,13 @@ def add_school(f_name: str) -> bool:
     db.commit()
     return True
 
-def create_student_account(f_firstName: str, 
+def create_account(f_firstName: str, 
                            f_lastName: str, 
                            f_password: str, 
                            f_acesssCode: str,
                            f_dob: str,
-                           f_location: str) -> bool:
+                           f_location: str,
+                           f_role: int) -> bool:
     """
     This function is used to add an account to the database
 
@@ -86,7 +87,7 @@ def create_student_account(f_firstName: str,
     # Then create our account
     dbCursor.execute("INSERT INTO Accounts "
                      "(salt, password, username, Roles_roleID, Users_userID, Schools_group) VALUES "
-                     "(?, ?, ?, ?, ?, ?)", (salt, password, username, 1, dbCursor.lastrowid, schoolID))
+                     "(?, ?, ?, ?, ?, ?)", (salt, password, username, f_role, dbCursor.lastrowid, schoolID))
     
     # Commit writes
     db.commit()
@@ -115,6 +116,43 @@ def check_account_login(f_username: str,
     #   given password is correct. Here we can just return a bool
     return (login[0] == hash_password(f_password, login[1]))
 
+def read_account_data(f_username: str) -> tuple [str, str, str, str, str, str, str, str, str]:
+   account = dbCursor.execute("SELECT Accounts.username, "
+            "Users.firstName, "
+            "Users.lastName, "
+            "Users.dob, "
+            "Users.location, "
+            "Accounts.Schools_group, "
+            "Schools.name, "
+            "Accounts.Roles_roleID, "
+            "Roles.description "
+        "FROM Users "
+        "INNER JOIN Accounts ON Accounts.Users_userID = Users.userID "
+        "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
+        "INNER JOIN Roles ON Accounts.Roles_roleID = Roles.roleID "
+        "WHERE Accounts.username = ?", (f_username,)).fetchone()
+   return account 
+
+def print_account_data(f_username: str) -> None:
+    loggedIn = read_account_data(f_username)
+    print("Username: {}\n"
+          "First Name: {}\n"
+          "Last Name: {}\n"
+          "Date of Birth: {}\n"
+          "Location: {}\n"
+          "School ID: {}\n"
+          "School Name: {}\n"
+          "Role ID: {}\n"
+          "Role Name: {}\n".format(loggedIn[0],
+                                   loggedIn[1],
+                                   loggedIn[2],
+                                   loggedIn[3],
+                                   loggedIn[4],
+                                   loggedIn[5],
+                                   loggedIn[6],
+                                   loggedIn[7],
+                                   loggedIn[8]))
+
 
 # SELECT Schools_group FROM Accounts WHERE Username = 'TeacCovs582874';
 # UPDATE Schools SET teacher = 'TeacCovs582874' WHERE schoolID = 3
@@ -135,32 +173,28 @@ def bind_school_teacher(f_username: str) -> bool:
 if __name__ == "__main__":
     try:
         # Create an account example
-        create_student_account('Jimmy', 
-                               'Cricket', 
-                               'ilovepeas', 
-                               '582874', 
-                               '2020-12-30', 
-                               'London')
-        create_student_account('Teacher', 
-                               'Covson',
-                                'coventryadmin', 
-                                '582874', 
-                                '2000-05-12', 
-                                'London')
+        # create_account('Jimmy', 'Cricket', 'ilovepeas', '582874', '2020-12-30', 'London', 1)
+        # create_account('Teacher', 'Covson', 'coventryadmin', '582874', '2000-05-12', 'London', 2)
 
         # Check username/password combinations example
         # Correct password
-        print(check_account_login('JimmCric582874', 
-                                  'ilovepeas'))
+        # print(check_account_login('JimmCric582874', 'ilovepeas'))
         # Incorrect password
-        print(check_account_login('JimmCric582874', 
-                                  'ilovepeasWRONG'))
+        #print(check_account_login('JimmCric582874', 'ilovepeasWRONG'))
 
         # Add school example
-        add_school("London Modern")
+        # add_school("London Modern")
 
         # Bind teacher to school example
         
+        # Read account data example
+        # loggedIn = read_account_data("JimmCric582874")
+
+        # Print account data example (debug)
+        print_account_data("JimmCric582874")
+        print_account_data("TeacCovs582874")
+
+
         None
     except Exception as err:
         print("ERROR:\n", err)
