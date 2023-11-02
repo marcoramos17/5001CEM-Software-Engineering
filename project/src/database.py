@@ -3,6 +3,7 @@
 #   https://docs.python.org/3/library/sqlite3.html
 import sqlite3
 import time
+import pyotp
 
 # For using our password generation
 from password import *
@@ -129,6 +130,12 @@ def db_create_account(f_firstName: str,
 
     return
 
+def db_update_user_secret(f_username: str, f_totp: pyotp.TOTP):
+    rnh = pyotp.random_base32()
+    totp = pyotp.TOTP(rnh)
+    print(totp)
+    return
+
 def db_check_account_login(f_username: str,
                            f_password: str) -> bool:
     """
@@ -163,6 +170,8 @@ def db_update_password(f_username: str,
         "SET password = ? "
         "WHERE username = ? ", (f_newPassword, f_username)
     )
+    db.commit()
+    return
 
 
 
@@ -236,7 +245,6 @@ def db_send_message(f_userFrom: str,
     :param str f_userFrom: User that sends the message
     :param str f_userTo: User that recieves the message
     :param str f_body: Body of the message
-    :return bool: Result
     """
     # Insert data into table
     dbCursor.execute("INSERT INTO Messages ("
@@ -249,6 +257,14 @@ def db_send_message(f_userFrom: str,
     return
     
 def db_get_inbox_users(f_username: str) -> list[tuple[str]]:
+    '''
+    This function is used to get the list of users in the DMs section for a given
+    user, this includes one way messsages from either side.
+
+    :param str f_username: The user to get the list for
+    :return list[tuple[str]]: A list of tuples of length 1, each contains a 
+        message recipient, there is no particular sorting to this yet though
+    '''
     inboxList = dbCursor.execute(
         "SELECT DISTINCT Accounts_senderID "
         "FROM Messages "
