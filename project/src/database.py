@@ -1,8 +1,31 @@
-# API for using the database
-# Tutorial on use of sqlite3 in python can be found at: 
-#   https://docs.python.org/3/library/sqlite3.html
-
 '''
+--------------------------------------------------------------------------------
+ - - - - - - - - - - - - - -UNLESS STATED OTHERWISE - - - - - - - - - - - - - - 
+ - - - - - - - - - - - -DYLAN CALLAGHAN 13306573 5000CEM - - - - - - - - - - - -
+--------------------------------------------------------------------------------
+ - - - - - - - - - - - - - - - - - FILE NOTES - - - - - - - - - - - - - - - - - 
+--------------------------------------------------------------------------------
+This file defines functions and creates handles to the project's database in or-
+der to be used as an API. This is a foundation for other files in the project, 
+as it allows other developers to utilize the database without having to constru-
+ct any SQL commands and run them themselves, although the option is available w-
+ith the handles that are created upon importing this file.
+
+Tutorial on use of sqlite3 in python can be found at: 
+  https://docs.python.org/3/library/sqlite3.html
+
+If you contribute to this file, please add your name and id ABOVE the function
+signature, as this will help to clearly show that it is yours. Alternatively ap-
+end a comment at the end of any LINES that you added, if not a whole function b-
+elongs to you.
+Additionally, please try to use type hints and follow the style guide for this 
+document.
+    • Function parameters prepended with 'f_'
+    • Soft character limit at 80 characters (can go over, be sensible)
+    • Prefered to multiline function arguments and return types
+    • Use sphinx docstring format, the details on how to use this can be found 
+        at https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html
+        although I am using inlined types in the attributes descriptions
 --------------------------------------------------------------------------------
  - - - - - - - - - - - - - - - FUNCTIONS OVERVIEW - - - - - - - - - - - - - - - 
 --------------------------------------------------------------------------------
@@ -68,15 +91,22 @@ db_read_messages_between():
             Timestamp
         )
 
-
-
-
-
-
-
 --------------------------------------------------------------------------------
-- 
+ - - - - - - - - - - - - - - - - CALLING ORDER - - - - - - - - - - - - - - - - -
 --------------------------------------------------------------------------------
+There are some caveats to think about when calling these functions so that we d-
+on't run into undefined behaviour or exceptions. Whilst there is practically no
+logical error checking in this API (since it is expected that others will imple-
+ment this behaviour inbetween the GUI and this code) it is handy to note a few 
+basic things.
+    • We must make schools first to get an access code, then make an account us-
+        ing that access code, then if they are a teacher, then bind them to the
+        school at that point.
+    • Create account also creates a user for that account that contains the per-
+        sonal details for that instance. DON'T FORGET that User and Account are
+        two different tables
+
+
 '''
 # For the database handles
 import sqlite3
