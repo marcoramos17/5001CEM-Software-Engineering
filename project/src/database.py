@@ -1,9 +1,97 @@
 # API for using the database
 # Tutorial on use of sqlite3 in python can be found at: 
 #   https://docs.python.org/3/library/sqlite3.html
+
+'''
+--------------------------------------------------------------------------------
+ - - - - - - - - - - - - - - - FUNCTIONS OVERVIEW - - - - - - - - - - - - - - - 
+--------------------------------------------------------------------------------
+db_sqlite3_init():
+    Initialise the database, return a handle to database, and its cursor
+
+db_add_school():
+    Add a school to the database
+
+db_bind_school_teacher():
+    Given a teacher, find their school and update the entry to the teacher
+
+db_get_teacher_from_username():
+    Given a username, find the teacher for their school
+
+db_create_account():
+    Create an account for a user, this will make both a Users, and Account entry
+
+db_update_user_secret():
+    Given a user, update the secret attribute by serialising a TOTP instance
+
+db_get_user_secret():
+    Given a user, return an unserialised instance of a TOTP object 
+
+db_check_account_login():
+    Given a user, return a bool based on if their login credentials match
+
+db_update_password():
+    Given a user, their old password, and current, update the password in the db
+
+db_read_account_data():
+    Given a user, return a tuple of their account data in this order:
+        (
+            First Name,
+            Last Name,
+            Date of Birth,
+            Location,
+            School ID (INTEGER),
+            School (String),
+            Role ID (INTEGER),
+            Role (String),
+        )
+
+db_print_account_data():
+    Expansion on previous, mainly for demonstration purposes
+
+db_send_message(): 
+    Given two users and a message, add an entry in the database to represent a
+    message sent between them, timestamps and read attribute are generated 
+    automatically
+
+db_get_inbox_users():
+    Get a list of DM contacts, will be used in the DM functionality to display
+    different message sections (corresponding to DMs between different users)
+
+db_read_messages_between():
+    Given two users, return a list of tuples, containing the messages between t-
+    hem. Each tuple has the following format:
+        (
+            Username of sender,
+            Username of recipient,
+            Body of message,
+            Timestamp
+        )
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+- 
+--------------------------------------------------------------------------------
+'''
+# For the database handles
 import sqlite3
+
+# For sleeping (used in the examples)
 import time
-import pyotp
+
+# For OTPs (used in the examples)
+from pyotp import random_base32, TOTP
+try:
+    # Try to import a more efficient implementation
+   import cPickle as pickle
+except:
+    # Else, fallback
+   import pickle
 
 # For using our password generation
 from password import *
@@ -68,18 +156,25 @@ def db_bind_school_teacher(f_username: str) -> None:
     return
 
 def db_get_teacher_from_username(f_username: str) -> str:
+    '''
+    This function returns the teacher assigned to a school, given any user from
+        that specific school.
+
+    :param str f_username: The username to check the teacher for
+    :return str: 
+    '''
     teacher = dbCursor.execute("SELECT Schools.teacher FROM Accounts "
                                "INNER JOIN Schools ON Schools.schoolID = Accounts.Schools_group "
                                "WHERE Accounts.username = ?", (f_username,)).fetchone()[0]
     return teacher
 
-def db_create_account(f_firstName: str, 
-                      f_lastName: str, 
-                      f_password: str, 
+def db_create_account(f_firstName:  str, 
+                      f_lastName:   str, 
+                      f_password:   str, 
                       f_acesssCode: str,
-                      f_dob: str,
-                      f_location: str,
-                      f_role: int) -> None:
+                      f_dob:        str,
+                      f_location:   str,
+                      f_role:       int) -> None:
     """
     This function is used to add an account to the database.
 
@@ -130,11 +225,23 @@ def db_create_account(f_firstName: str,
 
     return
 
-def db_update_user_secret(f_username: str, f_totp: pyotp.TOTP):
-    rnh = pyotp.random_base32()
-    totp = pyotp.TOTP(rnh)
-    print(totp)
+def db_update_user_secret(f_username: str, 
+                          f_totp:     TOTP):
+    blob = pickle.dumps(f_totp, pickle.HIGHEST_PROTOCOL)
+    dbCursor.execute(
+        "UPDATE Accounts "
+        "SET secret = ? "
+        "WHERE username = ?", (blob, f_username))
+    db.commit()
     return
+
+def db_get_user_secret(f_username: str) -> TOTP:
+    blob = dbCursor.execute(
+        "SELECT secret "
+        "FROM Accounts "
+        "WHERE username = ?", (f_username,)
+    ).fetchone()[0]
+    return pickle.loads(blob)
 
 def db_check_account_login(f_username: str,
                            f_password: str) -> bool:
@@ -152,7 +259,8 @@ def db_check_account_login(f_username: str,
     #   given password is correct. Here we can just return a bool
     return (login[0] == hash_password(f_password, login[1]))
 
-def db_update_password(f_username: str,
+
+def db_update_password(f_username:    str,
                        f_oldPassword: str,
                        f_newPassword: str) -> None:
     """
@@ -237,7 +345,7 @@ def db_print_account_data(f_username: str) -> None:
                                     loggedIn[8]))
 
 def db_send_message(f_userFrom: str,
-                    f_userTo: str,
+                    f_userTo:   str,
                     f_body) -> None:
     """
     This function is used to send a message between two users in the database.
@@ -275,7 +383,8 @@ def db_get_inbox_users(f_username: str) -> list[tuple[str]]:
         "WHERE Accounts_senderID = ?", (f_username, f_username)).fetchall()
     return inboxList
 
-def db_read_messages_between(f_userFrom: str, f_userTo: str) -> list [tuple [str, str, str, str]]:
+def db_read_messages_between(f_userFrom: str, 
+                             f_userTo:   str) -> list [tuple [str, str, str, str]]:
     messages = dbCursor.execute(
         "SELECT Accounts_senderID, Accounts_recieverID, body, timestamp "
         "FROM Messages "
@@ -413,15 +522,21 @@ if __name__ == "__main__":
         #     print("- " + username[0])
         # print('')
         
+        # ----------------------------------------------------------------------
+        # Update and read TOTP example
+        # ----------------------------------------------------------------------
+        # randomRNG = random_base32()
+        # pyotpTotp = TOTP(randomRNG)
 
-
-
-
-
+        # db_update_user_secret('JimmCric582874', pyotpTotp)
+        # newTotp = db_get_user_secret('JimmCric582874')
+        # if newTotp.secret == pyotpTotp.secret:
+        #     print("The stored and calculated TOTP secrets are equal")
 
         # ----------------------------------------------------------------------
         # 
         # ----------------------------------------------------------------------
+
         None
     except Exception as err:
         print("ERROR:\n", err)
