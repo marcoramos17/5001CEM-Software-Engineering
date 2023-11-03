@@ -5,11 +5,19 @@
 --------------------------------------------------------------------------------
  - - - - - - - - - - - - - - - - - FILE NOTES - - - - - - - - - - - - - - - - - 
 --------------------------------------------------------------------------------
+
 This file defines functions and creates handles to the project's database in or-
 der to be used as an API. This is a foundation for other files in the project, 
 as it allows other developers to utilize the database without having to constru-
 ct any SQL commands and run them themselves, although the option is available w-
 ith the handles that are created upon importing this file.
+
+Examples are at the bottom of the file, and only ran if called from main. To use
+the examples, uncomment the relevant portions of code. Note that some examples
+may fail due to uniqueness constraints in the database (if ran more than once) 
+so to avoid this, either only read the examples for usage, or delete the releva-
+nt rows from the database directly before running (perhaps in sqlitestudio or s-
+imilar).
 
 Tutorial on use of sqlite3 in python can be found at: 
   https://docs.python.org/3/library/sqlite3.html
@@ -21,11 +29,15 @@ elongs to you.
 Additionally, please try to use type hints and follow the style guide for this 
 document.
     • Function parameters prepended with 'f_'
+    • Internal variables do not have anything prepended
     • Soft character limit at 80 characters (can go over, be sensible)
     • Prefered to multiline function arguments and return types
     • Use sphinx docstring format, the details on how to use this can be found 
         at https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html
         although I am using inlined types in the attributes descriptions
+    • Explaination can be done with comments ABOVE the line or block of code
+    • Preferable to align typehints and parameter names, see db_create_account()
+
 --------------------------------------------------------------------------------
  - - - - - - - - - - - - - - - FUNCTIONS OVERVIEW - - - - - - - - - - - - - - - 
 --------------------------------------------------------------------------------
@@ -105,8 +117,6 @@ basic things.
     • Create account also creates a user for that account that contains the per-
         sonal details for that instance. DON'T FORGET that User and Account are
         two different tables
-
-
 '''
 # For the database handles
 import sqlite3
@@ -204,7 +214,7 @@ def db_create_account(f_firstName:  str,
                       f_acesssCode: str,
                       f_dob:        str,
                       f_location:   str,
-                      f_role:       int) -> None:
+                      f_role:       int) -> str:
     """
     This function is used to add an account to the database.
 
@@ -215,6 +225,7 @@ def db_create_account(f_firstName:  str,
     :param str dob: Date of birth of the user
     :param str location: Location of the user
     :param int role: The role ID of the user
+    :return str: The generated username from account creation
     """
     # Use statments on the cursor, remembering to use placeholders (?) to 
     #   prevent against SQL injection attacks
@@ -253,10 +264,14 @@ def db_create_account(f_firstName:  str,
         print("Username is: {}\n".format(username))
         print("Salt is: {}\n".format(salt))
 
-    return
+    return username
 
 def db_update_user_secret(f_username: str, 
                           f_totp:     TOTP):
+    '''
+    This function updates a user's secret, this is a BLOB in the database which
+        contains a serialized version of a `pyotp.TOTP` object
+    '''
     blob = pickle.dumps(f_totp, pickle.HIGHEST_PROTOCOL)
     dbCursor.execute(
         "UPDATE Accounts "
@@ -310,7 +325,6 @@ def db_update_password(f_username:    str,
     )
     db.commit()
     return
-
 
 
 def db_read_account_data(f_username: str) -> tuple [str, 
@@ -566,6 +580,7 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # 
         # ----------------------------------------------------------------------
+
 
         None
     except Exception as err:
