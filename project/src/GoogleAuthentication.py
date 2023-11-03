@@ -10,7 +10,6 @@ import qrcode.image.svg
 def userAccountCheck(accountName):
     RNGSecretGeneration = pyotp.random_base32()
     RNGSecretTOTP = pyotp.TOTP(RNGSecretGeneration) 
-    print(RNGSecretTOTP) 
     qrCodeImage = qrcode.make(pyotp.totp.TOTP(RNGSecretGeneration).provisioning_uri(name=accountName, issuer_name="Komodo Hub"), image_factory=qrcode.image.svg.SvgImage)
     with open('qrcode.svg', 'wb') as qr:
         qrCodeImage.save(qr)
