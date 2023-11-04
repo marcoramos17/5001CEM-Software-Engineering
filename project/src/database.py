@@ -50,6 +50,12 @@ db_add_school():
 db_bind_school_teacher():
     Given a teacher, find their school and update the entry to the teacher
 
+db_get_access_code_from_account():
+    Given an account, get their access code
+
+db_get_access_code_from_school():
+    Given a school, get its access code
+
 db_get_teacher_from_username():
     Given a username, find the teacher for their school
 
@@ -70,17 +76,15 @@ db_update_password():
 
 db_read_account_data():
     Given a user, return a tuple of their account data in this order:
-        (
-            First Name,
-            Last Name,
-            Date of Birth,
-            Location,
-            School ID (INTEGER),
-            School (String),
-            Role ID (INTEGER),
-            Role (String),
-        )
-
+        0   First Name,             The user's first name
+        1   Last Name,              The user's last name
+        2   Date of Birth,          The user's date of birth 
+        3   Location,               Real world location of the user
+        4   School ID (INTEGER),    The school ID that is used in functions
+        5   School (String),        The name of that school, for easy printing
+        6   Role ID (INTEGER),      The role ID used in functions
+        7   Role (String),          The name of the role, for easy printing
+        
 db_print_account_data():
     Expansion on previous, mainly for demonstration purposes
 
@@ -96,12 +100,10 @@ db_get_inbox_users():
 db_read_messages_between():
     Given two users, return a list of tuples, containing the messages between t-
     hem. Each tuple has the following format:
-        (
-            Username of sender,
-            Username of recipient,
-            Body of message,
-            Timestamp
-        )
+        0   Username of sender,
+        1   Username of recipient,
+        2   Body of message,
+        3   Timestamp
 
 --------------------------------------------------------------------------------
  - - - - - - - - - - - - - - - - CALLING ORDER - - - - - - - - - - - - - - - - -
@@ -142,7 +144,8 @@ import os.path
 # To print debug strings
 debug = True
 
-def db_sqlite3_init() -> tuple [sqlite3.Connection, sqlite3.Cursor]:
+def db_sqlite3_init(f_filename: str) -> tuple [sqlite3.Connection, 
+                                               sqlite3.Cursor]:
     """
     Init for the database connections, this will connect to the database
     contained within the repository.
@@ -151,7 +154,7 @@ def db_sqlite3_init() -> tuple [sqlite3.Connection, sqlite3.Cursor]:
     """ 
     # Get file path
     baseDir = os.path.dirname(os.path.abspath(__file__))
-    dbPath = os.path.join(baseDir, "../data/db.db")
+    dbPath = os.path.join(baseDir, "../data/{}.db".format(f_filename))
     # Create a connection to our database
     db = sqlite3.connect(dbPath)
     # Create a cursor to do commands
@@ -159,15 +162,15 @@ def db_sqlite3_init() -> tuple [sqlite3.Connection, sqlite3.Cursor]:
 
 '''
 The following variables are available for use upon importing this file. Although
-    it is not suggested to use them at all. Hopefully the functions in this file
-    should be enough to perform all the tasks that we need - if not, then more
-    functions can be added to the file.
+it is not suggested to use them at all. Hopefully the functions in this file
+should be enough to perform all the tasks that we need - if not, then more
+functions can be added to the file.
 
-    The reason for this is that interactions with these functions have had tests
-    performed, untested use of the database handle and cursor may result in some
-    errors or even break the database completely.
+The reason for this is that interactions with these functions have had tests
+performed, untested use of the database handle and cursor may result in some
+errors or even break the database completely.
 '''
-db, dbCursor = db_sqlite3_init()
+db, dbCursor = db_sqlite3_init('db')
 
 def db_add_school(f_name: str) -> None:
     """
@@ -177,8 +180,11 @@ def db_add_school(f_name: str) -> None:
     """
     # We only need the name of the school to add it
     #   since the access code is generated automatically
-    dbCursor.execute("INSERT INTO Schools (name) VALUES "
-                     "(?)", (f_name,))
+    dbCursor.execute(
+        "INSERT INTO Schools (name) VALUES "
+        "(?)", 
+        (f_name,)
+    )
     db.commit()
     return
 
@@ -188,24 +194,50 @@ def db_bind_school_teacher(f_username: str) -> None:
 
     :param str f_username: Name of the teacher to bind to their stored school
     """
-    schoolID = dbCursor.execute("SELECT Schools_group FROM Accounts WHERE Username = ?", 
-                                (f_username,)).fetchone()[0]
-    dbCursor.execute("UPDATE Schools SET teacher = ? WHERE schoolID = ?", 
-                     (f_username, schoolID))
+    schoolID = dbCursor.execute(
+        "SELECT Schools_group FROM Accounts WHERE Username = ?", 
+        (f_username,)
+    ).fetchone()[0]
+    dbCursor.execute(
+        "UPDATE Schools SET teacher = ? WHERE schoolID = ?", 
+        (f_username, schoolID)
+    )
     db.commit()
     return
+
+def db_get_access_code_from_account(f_username: str) -> str:
+    accessCode = dbCursor.execute(
+        "SELECT Schools.accessCode "
+        "FROM Accounts "
+        "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
+        "WHERE Accounts.username = ?",
+        (f_username,) 
+    ).fetchone()[0]
+    return accessCode
+
+def db_get_access_code_from_school(f_school: str) -> str:
+    accessCode = dbCursor.execute(
+        "SELECT accessCode "
+        "FROM Schools "
+        "WHERE name = ?",
+        (f_school,) 
+    ).fetchone()[0]
+    return accessCode
 
 def db_get_teacher_from_username(f_username: str) -> str:
     '''
     This function returns the teacher assigned to a school, given any user from
-        that specific school.
+    that specific school.
 
     :param str f_username: The username to check the teacher for
     :return str: 
     '''
-    teacher = dbCursor.execute("SELECT Schools.teacher FROM Accounts "
-                               "INNER JOIN Schools ON Schools.schoolID = Accounts.Schools_group "
-                               "WHERE Accounts.username = ?", (f_username,)).fetchone()[0]
+    teacher = dbCursor.execute(
+        "SELECT Schools.teacher FROM Accounts "
+        "INNER JOIN Schools ON Schools.schoolID = Accounts.Schools_group "
+        "WHERE Accounts.username = ?", 
+        (f_username,)
+    ).fetchone()[0]
     return teacher
 
 def db_create_account(f_firstName:  str, 
@@ -229,13 +261,17 @@ def db_create_account(f_firstName:  str,
     """
     # Use statments on the cursor, remembering to use placeholders (?) to 
     #   prevent against SQL injection attacks
-    dbCursor.execute("INSERT INTO Users(firstName, lastName, dob, location) "
-                     "VALUES (?, ?, ?, ?)", 
-                     (f_firstName, f_lastName, f_dob, f_location))
+    dbCursor.execute(
+        "INSERT INTO Users(firstName, lastName, dob, location) "
+        "VALUES (?, ?, ?, ?)", 
+        (f_firstName, f_lastName, f_dob, f_location)
+    )
 
     # Fetch the access code
-    schoolID = dbCursor.execute("SELECT schoolID FROM Schools WHERE accessCode = ?", 
-                                (f_acesssCode,)).fetchone()
+    schoolID = dbCursor.execute(
+        "SELECT schoolID FROM Schools WHERE accessCode = ?", 
+        (f_acesssCode,)
+    ).fetchone()
     # If the access code is invalid (null return)
     if schoolID == None:
         raise Exception("Access code invalid.\n")
@@ -243,7 +279,12 @@ def db_create_account(f_firstName:  str,
     schoolID = schoolID[0]
     
     # Username generation rule, is unique (enough in this prototype)
-    username = f_firstName[:4] + f_lastName[:4] + f_acesssCode
+    try:
+        username = f_firstName[:4] + f_lastName[:4] + f_acesssCode
+    except:
+        username =  f_firstName.ljust(4, 'x')[:4] + \
+                    f_lastName.ljust(4, 'x')[:4] + \
+                    f_acesssCode
 
     # Get our salt
     salt = generate_salt()
@@ -251,9 +292,12 @@ def db_create_account(f_firstName:  str,
     password = hash_password(f_password, salt)
 
     # Then create our account
-    dbCursor.execute("INSERT INTO Accounts "
-                     "(salt, password, username, Roles_roleID, Users_userID, Schools_group) VALUES "
-                     "(?, ?, ?, ?, ?, ?)", (salt, password, username, f_role, dbCursor.lastrowid, schoolID))
+    dbCursor.execute(
+        "INSERT INTO Accounts "
+        "(salt, password, username, Roles_roleID, Users_userID, Schools_group) "
+        "VALUES (?, ?, ?, ?, ?, ?)",
+        (salt, password, username, f_role, dbCursor.lastrowid, schoolID)
+    )
     
     # Commit writes
     db.commit()
@@ -267,20 +311,31 @@ def db_create_account(f_firstName:  str,
     return username
 
 def db_update_user_secret(f_username: str, 
-                          f_totp:     TOTP):
+                          f_totp:     TOTP) -> None:
     '''
     This function updates a user's secret, this is a BLOB in the database which
-        contains a serialized version of a `pyotp.TOTP` object
+    contains a serialized version of a `pyotp.TOTP` object.
+
+    :param str f_username: The username to update the secret for
+    :param TOTP f_totp: The TOTP class instance
     '''
     blob = pickle.dumps(f_totp, pickle.HIGHEST_PROTOCOL)
     dbCursor.execute(
         "UPDATE Accounts "
         "SET secret = ? "
-        "WHERE username = ?", (blob, f_username))
+        "WHERE username = ?", (blob, f_username)
+    )
     db.commit()
     return
 
 def db_get_user_secret(f_username: str) -> TOTP:
+    '''
+    This function gets the user's secret, and unpickles it to get an instance of
+    the TOTP class.
+
+    :param str f_username: The user to grab the secret for
+    :return TOTP: The TOTP instance
+    '''
     blob = dbCursor.execute(
         "SELECT secret "
         "FROM Accounts "
@@ -297,11 +352,13 @@ def db_check_account_login(f_username: str,
     :param str f_password: Password to compare to stored hash
     :return bool: Result (True if password is correct, False otherwise)
     """
-    # Get the hashed password, and the salt from the accounts list, from the username
-    login = dbCursor.execute("SELECT password, salt FROM Accounts WHERE username = ?", 
-                             (f_username,)).fetchone()
-    # If the hashed password is the same as the hash of the input password, then the 
-    #   given password is correct. Here we can just return a bool
+    # Get the hashed password, and the salt from the accounts list
+    login = dbCursor.execute(
+        "SELECT password, salt FROM Accounts WHERE username = ?", 
+        (f_username,)
+    ).fetchone()
+    # If the hashed password is the same as the hash of the input password, then 
+    #   the given password is correct. Here we can just return a bool
     return (login[0] == hash_password(f_password, login[1]))
 
 
@@ -309,8 +366,8 @@ def db_update_password(f_username:    str,
                        f_oldPassword: str,
                        f_newPassword: str) -> None:
     """
-    This function is used to change a user's password, it performs a basic password
-    check first.
+    This function is used to change a user's password, it performs a basic pass-
+    word check first.
 
     :param str f_username: Username to change password for
     :param str f_oldPassword: Password to compare to stored hash
@@ -399,19 +456,22 @@ def db_send_message(f_userFrom: str,
     :param str f_body: Body of the message
     """
     # Insert data into table
-    dbCursor.execute("INSERT INTO Messages ("
-                        "Accounts_senderID, "
-                        "accounts_recieverID, "
-                        "body) "
-                    "VALUES (?, ?, ?)", (f_userFrom, f_userTo, f_body))
+    dbCursor.execute(
+        "INSERT INTO Messages ("
+        "Accounts_senderID, "
+        "accounts_recieverID, "
+        "body) "
+        "VALUES (?, ?, ?)", 
+        (f_userFrom, f_userTo, f_body)
+    )
     # Ensure that changes are committed to the DB
     db.commit()
     return
     
 def db_get_inbox_users(f_username: str) -> list[tuple[str]]:
     '''
-    This function is used to get the list of users in the DMs section for a given
-    user, this includes one way messsages from either side.
+    This function is used to get the list of users in the DMs section for a giv-
+    en user, this includes one way messsages from either side.
 
     :param str f_username: The user to get the list for
     :return list[tuple[str]]: A list of tuples of length 1, each contains a 
@@ -424,17 +484,23 @@ def db_get_inbox_users(f_username: str) -> list[tuple[str]]:
         "UNION "
         "SELECT DISTINCT Accounts_recieverID "
         "FROM Messages "
-        "WHERE Accounts_senderID = ?", (f_username, f_username)).fetchall()
+        "WHERE Accounts_senderID = ?", 
+        (f_username, f_username)
+    ).fetchall()
     return inboxList
 
 def db_read_messages_between(f_userFrom: str, 
-                             f_userTo:   str) -> list [tuple [str, str, str, str]]:
+                             f_userTo:   str) -> list [tuple [str, 
+                                                              str, 
+                                                              str, 
+                                                              str]]:
     messages = dbCursor.execute(
         "SELECT Accounts_senderID, Accounts_recieverID, body, timestamp "
         "FROM Messages "
         "WHERE Accounts_senderID = ? OR "
             "(Accounts_recieverID = ? AND Accounts_senderID = ?)", 
-        (f_userFrom, f_userFrom, f_userTo)).fetchall()
+        (f_userFrom, f_userFrom, f_userTo)
+    ).fetchall()
     return messages
 
 
@@ -471,7 +537,8 @@ if __name__ == "__main__":
         #                     '1978-02-27',
         #                     'Birmingham',
         #                     2)
-        # db_bind_school_teacher('JameDudl829854')
+
+        # 
 
         # ----------------------------------------------------------------------
         # Check username/password combinations example
@@ -490,6 +557,7 @@ if __name__ == "__main__":
         # Bind teacher to school example
         # ----------------------------------------------------------------------
         # db_bind_school_teacher("TeacCovs582874")
+        # db_bind_school_teacher('JameDudl829854')
         # Read account data example
         # loggedIn = db_read_account_data("JimmCric582874")
 
@@ -537,20 +605,28 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # Print messages between example
         # ----------------------------------------------------------------------
-        # print("Messages between {} and {}".format("TeacCovs582874", "JimmCric582874"))
-        # messages = db_read_messages_between("TeacCovs582874", "JimmCric582874")
+        # print("Messages between {} and {}".format("TeacCovs582874", 
+        #                                           "JimmCric582874")) 
+        # messages = db_read_messages_between("TeacCovs582874", 
+        #                                     "JimmCric582874")
         # for message in messages:
         #     print("FROM: {}\nTO:   {}\nBODY: {}\n".format(message[0], 
         #                                                   message[1], 
         #                                                   message[2]))
 
-        # print("Messages between {} and {}".format("JameDudl829854", "ElizBrum829854"))
-        # messages = db_read_messages_between("JameDudl829854", "ElizBrum829854")
+        # print("Messages between {} and {}".format("JameDudl829854", 
+        #                                           "ElizBrum829854"))
+                                                  
+        # messages = db_read_messages_between("JameDudl829854", 
+        #                                     "ElizBrum829854")
         # for message in messages:
-        #     print("FROM: {}\nTO:   {}\nBODY: {}\nAT:   {}\n".format(message[0], 
-        #                                                             message[1], 
-        #                                                             message[2],
-        #                                                             message[3]))
+        #     print(
+        #         "FROM: {}\n"
+        #         "TO:   {}\n"
+        #         "BODY: {}\n"
+        #         "AT:   {}\n"
+        #         .format(message[0], message[1], message[2],message[3])
+        #     )
     
         # ----------------------------------------------------------------------
         # Show inbox users example
