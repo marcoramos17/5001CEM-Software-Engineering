@@ -47,6 +47,9 @@ db_sqlite3_init():
 db_add_school():
     Add a school to the database
 
+db_get_schools():
+    Get a list of schools
+
 db_bind_school_teacher():
     Given a teacher, find their school and update the entry to the teacher
 
@@ -128,12 +131,16 @@ import time
 
 # For OTPs (used in the examples)
 from pyotp import random_base32, TOTP
-try:
-    # Try to import a more efficient implementation
-   import cPickle as pickle
-except:
-    # Else, fallback
-   import pickle
+
+# try:
+#     # Try to import a more efficient implementation
+#    import cPickle as pickle
+# except:
+#     # Else, fallback
+#    import pickle
+
+# The linting errors for the above were pissing me off, so here is alternative
+import pickle
 
 # For using our password generation
 from password import *
@@ -187,6 +194,23 @@ def db_add_school(f_name: str) -> None:
     )
     db.commit()
     return
+
+def db_get_schools() -> list[str]:
+    """
+    This function is used to get a list of the schools in the database
+
+    :return list[str]: The list of schools
+    """
+    # Get a list of tuples
+    schoolsTuples = dbCursor.execute(
+        "SELECT name FROM Schools"
+    ).fetchall()
+    # Create our return list
+    schoolsList = []
+    # Extract names from tuples
+    for school in schoolsTuples:
+        schoolsList.append(school[0])
+    return schoolsList
 
 def db_bind_school_teacher(f_username: str) -> None:
     """
@@ -656,9 +680,7 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # 
         # ----------------------------------------------------------------------
-
-
-        None
+        print('')
     except Exception as err:
         print("ERROR:\n", err)
     dbCursor.close()

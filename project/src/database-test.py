@@ -1,70 +1,105 @@
 import unittest
-from password import *
+import database as db
 
-salt = generate_salt()
-# Test a standard password
-stdHashed = hash_password('test123456', salt)
-# Test password of min length 
-minHashed = hash_password('12345678', salt)
-# Test a password of max length
-maxHashed = hash_password('123456789abcdefghikl', salt)
-# Test password with symbols
-symHashed = hash_password('123456$"£^$(^', salt)
-
-passwords = {'test123456' : stdHashed,
-             '12345678': minHashed,
-             '123456789abcdefghikl' : maxHashed,
-             '123456$"£^$(^' : symHashed}
+'''
+Functions to test, tested functions are marked with 1's
+    IMPL    db_sqlite3_init():      
+    YES     db_add_school():
+    YES     db_get_schools():
+    NO      db_bind_school_teacher():
+    NO      db_get_access_code_from_account():
+    YES     db_get_access_code_from_school():
+    NO      db_get_teacher_from_username():
+    YES     db_create_account():
+    NO      db_update_user_secret():
+    NO      db_get_user_secret():
+    NO      db_check_account_login():
+    NO      db_update_password():
+    YES     db_read_account_data():
+    NO      db_print_account_data():
+    NO      db_send_message():               
+    NO      db_get_inbox_users():
+    NO      db_read_messages_between():
+'''
 
 class PasswordTesting(unittest.TestCase):
-    # Test that salts are created
-    def test_salt_generation(self):
-        # Define our hex check
-        hex_check = None
-        try:
-            # If the salt is a hex value, then update
-            hex_check = int(salt, 16)
-        except Exception:
-            # Else ignore
-            pass
-        # Check that salt is in hex
-        self.assertIsNotNone(hex_check)
-        # This really follows, but oh well
-        self.assertIsNotNone(salt)
-        # Check types
-        self.assertEqual(type(salt), str)
+    # Load the testing database by overwriting the standard cursor
+    db.db, db.dbCursor = db.db_sqlite3_init('testDB')
+    # Set the debug flag to false, removes excess printing
+    db.debug = False
+    schoolOne = "London High"
+    schoolTwo = "Coventry High"
 
+    def test_adding_schools(self):
+        # Empty the table for testing
+        db.dbCursor.execute(
+            "DELETE FROM Schools"
+        )
+        # Add the schools
+        db.db_add_school(self.schoolOne)
+        db.db_add_school(self.schoolTwo)
+        # Get the list of schools
+        schoolsList = db.db_get_schools()
+        # Check that the schools we made are in that list
+        self.assertIn(self.schoolOne, schoolsList)
+        self.assertIn(self.schoolTwo, schoolsList)
+        # Check that an erroneous school is not in the list
+        self.assertNotIn("Manchester High", schoolsList)
 
-    def test_salt_length(self):
-        # Check lengths
-        self.assertEqual(len(bytes.fromhex(salt)), 32)
-
-    def test_correct_password(self):
-        # Test that each hashed password passes when checked
-        for password, hash in passwords.items():
-            with self.subTest(password = password, hash = hash):
-                self.assertEqual(hash_password(password, salt), hash)
-
-    def test_incorrect_password(self):
-        # Test that when comparing password to wrong
-        #   password the hashes should not match
-        for password, hash in passwords.items():
-            with self.subTest(password = password):
-                self.assertNotEqual(hash_password(password + "blah", salt), hash)
-
-
-    def test_incorrect_salt(self):
-        # Check that incorrect salts fail the hashing
-        for password, hash in passwords.items():
-            with self.subTest(password = password):
-                self.assertNotEqual(hash_password(password, generate_salt()), hash)
+    def test_create_account(self):
+        # Empty table for testing
+        db.dbCursor.execute(
+            "DELETE FROM Accounts"
+        )
+        # Empty table for testing
+        db.dbCursor.execute(
+            "DELETE FROM Users"
+        )
+        # Get the access codes for both schools
+        bhamAccess = db.db_get_access_code_from_school(self.schoolOne)
+        covAccess = db.db_get_access_code_from_school(self.schoolTwo)
         
+        # Add a student account for Coventry
+        covStdName = db.db_create_account(
+            "Covent",
+            "Stewdent",
+            "CoventryLove!234",
+            str(covAccess),
+            "2002-12-31",
+            "Coventry",
+            1
+        )
+        # Add a teacher account for Coventry
+        covTchName = db.db_create_account(
+            "Covent",
+            "Teechar",
+            "ih8teaching",
+            str(covAccess),
+            "1978-10-23",
+            "Coventry",
+            2
+        )
+        # Add a student account for Birmingham
+        bhmStdName = db.db_create_account(
+            "Bhrum",
+            "Learnah",
+            "iluvdirt",
+            str(bhamAccess),
+            "2003-01-28",
+            "Coventry",
+            1
+        )
+        # Add a teachher account for Birmingham
+        bhmTchName = db.db_create_account(
+            "Bh",
+            "Tch",
+            "ilov3stella",
+            str(bhamAccess),
+            "1979-09-21",
+            "Birmingham",
+            2
+        )
 
-    def test_incorrect_pair(self):
-        # Test that when both portions are wrong the test fails
-        for password, hash in passwords.items():
-            with self.subTest(password = password):
-                self.assertNotEqual(hash_password(password + "blah", generate_salt()), hash)
 
 if __name__ == '__main__':
     unittest.main()
