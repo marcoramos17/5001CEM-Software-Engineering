@@ -22,7 +22,7 @@ Functions to test, tested functions are marked with 1's
     NO      db_read_messages_between():
 '''
 
-class PasswordTesting(unittest.TestCase):
+class DatabaseTesting(unittest.TestCase):
     # Load the testing database by overwriting the standard cursor
     db.db, db.dbCursor = db.db_sqlite3_init('testDB')
     # Set the debug flag to false, removes excess printing
@@ -69,6 +69,7 @@ class PasswordTesting(unittest.TestCase):
             "Coventry",
             1
         )
+        self.assertEqual(covStdName, "CoveStew" + covAccess)
         # Add a teacher account for Coventry
         covTchName = db.db_create_account(
             "Covent",
@@ -79,6 +80,7 @@ class PasswordTesting(unittest.TestCase):
             "Coventry",
             2
         )
+        self.assertEqual(covTchName, "CoveTeec" + covAccess)
         # Add a student account for Birmingham
         bhmStdName = db.db_create_account(
             "Bhrum",
@@ -89,6 +91,7 @@ class PasswordTesting(unittest.TestCase):
             "Coventry",
             1
         )
+        self.assertEqual(bhmStdName, "BhruLear" + bhamAccess)
         # Add a teachher account for Birmingham
         bhmTchName = db.db_create_account(
             "Bh",
@@ -99,6 +102,7 @@ class PasswordTesting(unittest.TestCase):
             "Birmingham",
             2
         )
+        self.assertEqual(bhmTchName, "BhTch" + bhamAccess)
 
 
 if __name__ == '__main__':

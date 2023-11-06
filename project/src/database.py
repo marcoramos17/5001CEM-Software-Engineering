@@ -176,6 +176,15 @@ functions can be added to the file.
 The reason for this is that interactions with these functions have had tests
 performed, untested use of the database handle and cursor may result in some
 errors or even break the database completely.
+
+The handles may be changed to a different database by doing the following:
+
+    import database as db
+    db.db, db.dbCursor = db.db_sqlite3_init(File)
+
+Which will overwrite the handles used by the functions, although no one should 
+need to do this apart from when running unit tests (in order to change to a tes-
+ting database).
 '''
 db, dbCursor = db_sqlite3_init('db')
 
@@ -230,6 +239,14 @@ def db_bind_school_teacher(f_username: str) -> None:
     return
 
 def db_get_access_code_from_account(f_username: str) -> str:
+    """
+    This function is return the access code from a username.
+    Whilst it seems this function may not make sense, it is resistant to any ch-
+    anges that we might make to the username generation system.
+
+    :param str f_username: The username to grab access code for
+    :return str: The access code
+    """
     accessCode = dbCursor.execute(
         "SELECT Schools.accessCode "
         "FROM Accounts "
@@ -237,16 +254,22 @@ def db_get_access_code_from_account(f_username: str) -> str:
         "WHERE Accounts.username = ?",
         (f_username,) 
     ).fetchone()[0]
-    return accessCode
+    return str(accessCode)
 
 def db_get_access_code_from_school(f_school: str) -> str:
+    """
+    This function is used get the access code for a school
+
+    :param str f_username: Name of the school to grab the access code for
+    :return str: The access code
+    """
     accessCode = dbCursor.execute(
         "SELECT accessCode "
         "FROM Schools "
         "WHERE name = ?",
         (f_school,) 
     ).fetchone()[0]
-    return accessCode
+    return str(accessCode)
 
 def db_get_teacher_from_username(f_username: str) -> str:
     '''
@@ -343,12 +366,15 @@ def db_update_user_secret(f_username: str,
     :param str f_username: The username to update the secret for
     :param TOTP f_totp: The TOTP class instance
     '''
+    # Serialize the data into binary format
     blob = pickle.dumps(f_totp, pickle.HIGHEST_PROTOCOL)
+    # Add to the table
     dbCursor.execute(
         "UPDATE Accounts "
         "SET secret = ? "
         "WHERE username = ?", (blob, f_username)
     )
+    # Commit and write the changes
     db.commit()
     return
 
@@ -360,11 +386,13 @@ def db_get_user_secret(f_username: str) -> TOTP:
     :param str f_username: The user to grab the secret for
     :return TOTP: The TOTP instance
     '''
+    # Fetch the serialized data
     blob = dbCursor.execute(
         "SELECT secret "
         "FROM Accounts "
         "WHERE username = ?", (f_username,)
     ).fetchone()[0]
+    # Unpickle and return
     return pickle.loads(blob)
 
 def db_check_account_login(f_username: str,
@@ -397,13 +425,16 @@ def db_update_password(f_username:    str,
     :param str f_oldPassword: Password to compare to stored hash
     :param str f_newPassword: Password to update to
     """
+    # Simple check for incorrect credentials
     if not db_check_account_login(f_username, f_oldPassword):
         raise Exception("Old password incorrect\n")
+    # Update with new password
     dbCursor.execute(
         "UPDATE Accounts "
         "SET password = ? "
         "WHERE username = ? ", (f_newPassword, f_username)
     )
+    # Commit changes and write
     db.commit()
     return
 
@@ -424,6 +455,7 @@ def db_read_account_data(f_username: str) -> tuple [str,
     :param str f_username: Username to read user data for
     :return tuple: Return a tuple containing multiple attributes
     """
+    # Read account data into tuple
     account = dbCursor.execute(
         "SELECT Accounts.username, "
             "Users.firstName, "
@@ -501,6 +533,7 @@ def db_get_inbox_users(f_username: str) -> list[tuple[str]]:
     :return list[tuple[str]]: A list of tuples of length 1, each contains a 
         message recipient, there is no particular sorting to this yet though
     '''
+    # Read list of users
     inboxList = dbCursor.execute(
         "SELECT DISTINCT Accounts_senderID "
         "FROM Messages "
@@ -518,6 +551,7 @@ def db_read_messages_between(f_userFrom: str,
                                                               str, 
                                                               str, 
                                                               str]]:
+    # Get the list of messages as a list of tuples containing message data
     messages = dbCursor.execute(
         "SELECT Accounts_senderID, Accounts_recieverID, body, timestamp "
         "FROM Messages "
@@ -529,6 +563,13 @@ def db_read_messages_between(f_userFrom: str,
 
 
 if __name__ == "__main__":
+    '''
+    Example usage of some of the above functions, some of these may fail depend-
+    ing on the current state of the database. Remove offending rows to stop this
+    from happening. Whilst this is not a complete guide on usage, it may help to
+    understand what
+    is going on in some of the functions.
+    '''
     try:
         # ----------------------------------------------------------------------
         # Create an account examples
