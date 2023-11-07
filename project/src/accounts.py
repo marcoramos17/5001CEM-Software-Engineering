@@ -1,20 +1,21 @@
-"""All account related code"""
+"""All account related code - documentation #07"""
 class Account:
     """
-    Class for Accounts
+    Class for general account processes
     """
 
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", access_code = "",
-                date_birth = "", location = "", role_id = 0):
+                date_birth = "", location = ""):
         """
         Constructor for the Account objects
         """
         self.username = username
+        self.role_id = 0
 
         if is_new:
             self.register(fst_name, lst_name, password,
-                          access_code, date_birth, location, role_id)
+                          access_code, date_birth, location, self.role_id)
 
         else:
             self.login(username, password)
@@ -23,9 +24,9 @@ class Account:
     def register(self, fst_name, lst_name, password,
                 access_code, date_birth, location, role_id ):
         """ user registration function """
-        print("new account - registration")
+        print("Regular account - registration -> ", fst_name, " ", lst_name)
         #self.username = <call Dylan's create account>
-        
+
         self.fst_name = fst_name
         self.lst_name = lst_name
         self.access_code = access_code
@@ -50,5 +51,96 @@ class Account:
         #self.school = <user's school in db>
         #self.role_id = <user's role id in db>
         #self.role = <user's role in db>
-        
+
         del password
+
+
+class CollectiveAccount(Account):
+    """" Class for collective account processes (i.e. accounts that aren't managed by a single person) """
+    def __init__(self, is_new, password, username = "",
+                fst_name = "", lst_name = "", date_birth = "", location = ""):
+        self.access_code = "999999"
+        self.role_id = 0
+        super().__init__(is_new, password, username, fst_name, lst_name,
+                        self.access_code, date_birth, location)
+
+    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
+        print("Business account registration -> ", fst_name, " ", lst_name)
+
+class PersonalAccount(Account):
+    """" Class for personal account processes (i.e. accounts that are managed by a single person) """
+    def __init__(self, is_new, password, username = "",
+                fst_name = "", lst_name = "", date_birth = "", location = ""):
+        self.access_code = "000000"
+        self.role_id = 6
+        super().__init__(is_new, password, username, fst_name, lst_name,
+                        self.access_code, date_birth, location)
+
+    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
+        print("Personal account registration -> ", fst_name, " ", lst_name)
+
+
+class ProfessorAccount(PersonalAccount):
+    """" Class for professor account processes (include the ability to send quizzes and tasks to student accounts) """
+    def __init__(self, is_new, password, username = "",
+                fst_name = "", lst_name = "", date_birth = "", location = ""):
+        self.access_code = "999999"
+        self.role_id = 0
+        super(Account).__init__(is_new, password, username, fst_name, lst_name,
+                        self.access_code, date_birth, location)
+
+    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
+        print("Business account registration -> ", fst_name, " ", lst_name)
+
+
+class StudentAccount(PersonalAccount):
+    """" Class for student account processes (include the ability to complete quizzes or minigames) """
+    def __init__(self, is_new, password, username = "",
+                fst_name = "", lst_name = "", date_birth = "", location = ""):
+        self.access_code = "999999"
+        self.role_id = 0
+        super(Account).__init__(is_new, password, username, fst_name, lst_name,
+                        self.access_code, date_birth, location)
+
+    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
+        print("Business account registration -> ", fst_name, " ", lst_name)
+
+
+class GuestAccount(PersonalAccount):
+    """" Class for guest account processes (i.e. accounts that aren't saved and don't require details, merely for browsing purposes) """
+    def __init__(self, is_new, password, username = "",
+                fst_name = "", lst_name = "", date_birth = "", location = ""):
+        self.access_code = "999999"
+        self.role_id = 0
+        super(Account).__init__(is_new, password, username, fst_name, lst_name,
+                        self.access_code, date_birth, location)
+
+    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
+        print("Business account registration -> ", fst_name, " ", lst_name)
+
+    # PECULIARITY OF THIS ACCOUNT: When logging off, uses it's own register/login function that
+    # doesn't save any details to the database
+
+class SchoolAccount(CollectiveAccount):
+    """" Class for school management account processes (accounts that own student accounts, and represent the school entity)"""
+    def __init__(self, is_new, password, username = "",
+                fst_name = "", lst_name = "", date_birth = "", location = ""):
+        self.access_code = "999999"
+        self.role_id = 0
+        super(Account).__init__(is_new, password, username, fst_name, lst_name,
+                        self.access_code, date_birth, location)
+
+    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
+        print("Business account registration -> ", fst_name, " ", lst_name)
+
+class BusinessAccount(CollectiveAccount):
+    """" Class for business account processes (accounts owned by businesses) """
+    def __init__(self, is_new, password, username = "",
+                fst_name = "", lst_name = "", date_birth = "", location = ""):
+        self.access_code = "999999"
+        self.role_id = 0
+        super(Account).__init__(is_new, password, username, fst_name, lst_name,
+                        self.access_code, date_birth, location)
+
+    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
+        print("Business account registration -> ", fst_name, " ", lst_name)
