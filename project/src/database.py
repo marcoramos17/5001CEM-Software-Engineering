@@ -609,13 +609,13 @@ if __name__ == "__main__":
         #                    '2000-05-12', 
         #                    'London', 
         #                    2)
-        # db_create_account('Eric', 
-        #                    'Professorson', 
-        #                    'coventryteacher', 
-        #                    '582874', 
-        #                    '1964-05-12', 
-        #                    'London', 
-        #                    2)
+        db_create_account('Eric', 
+                           'Professorson', 
+                           'coventryteacher', 
+                           '582874', 
+                           '1964-05-12', 
+                           'London', 
+                           2)
         # db_create_account('Elizabeth',
         #                     'Brummie',
         #                     'iLoveBirmingham!',
