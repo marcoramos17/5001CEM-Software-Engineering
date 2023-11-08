@@ -1,4 +1,6 @@
 """All account related code - documentation #07"""
+import database.py
+
 class Account:
     """
     Class for general account processes
@@ -56,7 +58,8 @@ class Account:
 
 
 class CollectiveAccount(Account):
-    """" Class for collective account processes (i.e. accounts that aren't managed by a single person) """
+    """" Class for collective account processes
+    (i.e. accounts that aren't managed by a single person) """
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.access_code = "999999"
@@ -68,7 +71,8 @@ class CollectiveAccount(Account):
         print("Business account registration -> ", fst_name, " ", lst_name)
 
 class PersonalAccount(Account):
-    """" Class for personal account processes (i.e. accounts that are managed by a single person) """
+    """" Class for personal account processes
+    (i.e. accounts that are managed by a single person) """
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.access_code = "000000"
@@ -81,7 +85,8 @@ class PersonalAccount(Account):
 
 
 class ProfessorAccount(PersonalAccount):
-    """" Class for professor account processes (include the ability to send quizzes and tasks to student accounts) """
+    """" Class for professor account processes (include the ability
+    to send quizzes and tasks to student accounts) """
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.access_code = "999999"
@@ -94,7 +99,8 @@ class ProfessorAccount(PersonalAccount):
 
 
 class StudentAccount(PersonalAccount):
-    """" Class for student account processes (include the ability to complete quizzes or minigames) """
+    """" Class for student account processes
+    (include the ability to complete quizzes or minigames) """
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.access_code = "999999"
@@ -107,7 +113,8 @@ class StudentAccount(PersonalAccount):
 
 
 class GuestAccount(PersonalAccount):
-    """" Class for guest account processes (i.e. accounts that aren't saved and don't require details, merely for browsing purposes) """
+    """" Class for guest account processes (i.e. accounts that aren't
+    saved and don't require details, merely for browsing purposes) """
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.access_code = "999999"
@@ -122,7 +129,8 @@ class GuestAccount(PersonalAccount):
     # doesn't save any details to the database
 
 class SchoolAccount(CollectiveAccount):
-    """" Class for school management account processes (accounts that own student accounts, and represent the school entity)"""
+    """" Class for school management account processes (accounts that own student accounts,
+    and represent the school entity)"""
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.access_code = "999999"
