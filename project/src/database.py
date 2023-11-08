@@ -242,26 +242,27 @@ def db_bind_school_teacher(f_username: str) -> None:
 Schema changes have left this function obselete, although it remains in the file
 for reference.
 '''
-# def db_get_access_code_from_account(f_username: str) -> str:
-#     """
-#     This function is return the access code from a username.
-#     Whilst it seems this function may not make sense, it is resistant to any ch-
-#     anges that we might make to the username generation system.
+def db_get_access_code_from_account(f_username: str) -> str:
+    """
+    This function is return the access code from a username.
+    Whilst it seems this function may not make sense, it is resistant to any ch-
+    anges that we might make to the username generation system.
 
-#     :param str f_username: The username to grab access code for
-#     :return str: The access code
-#     """
-#     accessCode = dbCursor.execute(
-#         "SELECT Schools.accessCode "
-#         "FROM Accounts "
-#         "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
-#         "WHERE Accounts.username = ?",
-#         (f_username,) 
-#     ).fetchone()[0]
-#     return str(accessCode)
+    :param str f_username: The username to grab access code for
+    :return str: The access code
+    """
+    accessCode = dbCursor.execute(
+        "SELECT Schools.accessCode "
+        "FROM Accounts "
+        "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
+        "WHERE Accounts.username = ?",
+        (f_username,) 
+    ).fetchone()[0]
+    return str(accessCode)
 
 def db_get_access_code_from_school(f_school: str) -> str:
     """
+    OBSELETE
     This function is used get the access code for a school
 
     :param str f_username: Name of the school to grab the access code for
@@ -279,21 +280,22 @@ def db_get_access_code_from_school(f_school: str) -> str:
 Schema changes have left this function obselete, although it remains in the file
 for reference.
 '''
-# def db_get_teacher_from_username(f_username: str) -> str:
-#     '''
-#     This function returns the teacher assigned to a school, given any user from
-#     that specific school.
+def db_get_teacher_from_username(f_username: str) -> str:
+    '''
+    OBSELETE
+    This function returns the teacher assigned to a school, given any user from
+    that specific school.
 
-#     :param str f_username: The username to check the teacher for
-#     :return str: 
-#     '''
-#     teacher = dbCursor.execute(
-#         "SELECT Schools.teacher FROM Accounts "
-#         "INNER JOIN Schools ON Schools.schoolID = Accounts.Schools_group "
-#         "WHERE Accounts.username = ?", 
-#         (f_username,)
-#     ).fetchone()[0]
-#     return teacher
+    :param str f_username: The username to check the teacher for
+    :return str: 
+    '''
+    teacher = dbCursor.execute(
+        "SELECT Schools.teacher FROM Accounts "
+        "INNER JOIN Schools ON Schools.schoolID = Accounts.Schools_group "
+        "WHERE Accounts.username = ?", 
+        (f_username,)
+    ).fetchone()[0]
+    return teacher
 
 def db_get_teachers_from_school(f_school: str) -> list[str]:
     teachersT = dbCursor.execute(
@@ -571,7 +573,14 @@ def db_read_messages_between(f_userFrom: str,
                                                               str, 
                                                               str, 
                                                               str]]:
-    # Get the list of messages as a list of tuples containing message data
+    '''
+    This function is used to return the messages between two users.
+
+    :param str f_userFrom: The user sending the messages
+    :param str f_userTo: The user recieving the messages
+    :return list[tuple[str, str, str, str]]: A list of tuples that contain mess-
+        age data, in the format specified at the begining of the file
+    '''
     messages = dbCursor.execute(
         "SELECT Accounts_senderID, Accounts_recieverID, body, timestamp "
         "FROM Messages "
@@ -581,6 +590,20 @@ def db_read_messages_between(f_userFrom: str,
     ).fetchall()
     return messages
 
+
+def db_check_username_exists(f_username: str) -> bool:
+    '''
+    This function is used to check if a username exists in the database.
+
+    :param str f_username: The username to check
+    :return bool: True or False, depending on if the username is in the database
+    '''
+    exists = dbCursor.execute(
+        "SELECT COUNT(1) "
+        "FROM Accounts "
+        "WHERE Username = ?", (f_username,)
+    ).fetchone()[0]
+    return bool(exists)
 
 if __name__ == "__main__":
     debug = True
@@ -609,13 +632,13 @@ if __name__ == "__main__":
         #                    '2000-05-12', 
         #                    'London', 
         #                    2)
-        db_create_account('Eric', 
-                           'Professorson', 
-                           'coventryteacher', 
-                           '582874', 
-                           '1964-05-12', 
-                           'London', 
-                           2)
+        # db_create_account('Eric', 
+        #                    'Professorson', 
+        #                    'coventryteacher', 
+        #                    '582874', 
+        #                    '1964-05-12', 
+        #                    'London', 
+        #                    2)
         # db_create_account('Elizabeth',
         #                     'Brummie',
         #                     'iLoveBirmingham!',
@@ -749,10 +772,30 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # Get teachers from school
         # ----------------------------------------------------------------------
-        teachers = db_get_teachers_from_school('Coventry High')
-        print("Teachers at Coventry High:")
-        for teacher in teachers:
-            print(" - " + teacher)
+        # teachers = db_get_teachers_from_school('Coventry High')
+        # print("Teachers at Coventry High:")
+        # for teacher in teachers:
+        #     print(" - " + teacher)
+
+        # teachers = db_get_teachers_from_school('Birmingham High')
+        # print("Teachers at Birmingham High:")
+        # for teacher in teachers:
+        #     print(" - " + teacher)
+
+        # ----------------------------------------------------------------------
+        # Check username exists example
+        # ----------------------------------------------------------------------
+        # users = ["EricProf582874",
+        #          "ErizProz582874",
+        #          "JameDudl829854",
+        #          "TeacCovs582874",
+        #          "TeacCovs582832",
+        #          "JimmCric582874",
+        #          "JamePoor413413"]
+        
+        # for user in users:
+        #     indb = db_check_username_exists(user)
+        #     print(user + (" in " if indb else " not in ") + "the database")
 
         # ----------------------------------------------------------------------
         # 
