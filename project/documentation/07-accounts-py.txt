@@ -1,0 +1,50 @@
+##=========================================================================##
+##==============================[ACCOUNTS.PY]==============================##
+(Documentation written by Marco Ramos)
+
+All or most of the code related to accounts can be found in'src/accounts.py'.
+It includes all the "object oriented programming" for the accounts as well
+as it's respective functions that allow for it to send or fetch data from
+the database.
+
+The account object-oriented programming was designed in accordance with the
+diagram designed by Marco Ramos in week 4 (refer to the document) which
+looks as follows:
+
+             ____________________________________________
+            //‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\\
+            ||      Account:                            ||
+            ||          - PersonalAccount:              ||
+            ||              -- ProfessorAccount         ||
+            ||              -- StudentAccount           ||
+            ||              -- GuestAccount             ||
+            ||          - CollectiveAccount:            ||
+            ||              -- SchoolAccount            ||
+            ||              -- BusinessAccount          ||
+            \\__________________________________________//
+             ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+It should be noted that the general "Account" class is not meant to be used
+and neither is the "CollectiveAccount" subclass, at least not for now, there
+might be some changes in the future. "PersonalAccount" although being a 
+wrapper for other subclasses, much like "CollectiveAccount", can be used for
+regular accounts, which aren't for professors, students or guests.
+
+- Professor accounts have the peculiarity of being able to create quizzes
+    (at least in the near future when quizzes are implemented)
+- Student accounts have some limitations like being unable to talk with
+    people outside of their school
+- Guest accounts are limited to only being able to browse, but they don't
+    require any details for entering the webpage
+
+- School accounts are meant to be managed by the school staff, they generate
+    an access code which can be used by students and teachers to create their
+    own accounts, this means the school accounts "own" the professor and
+    student accounts
+- Business accounts are meant to be managed by businesses
+
+REFERENCES:
+https://realpython.com/python3-object-oriented-programming/
+https://stackoverflow.com/questions/43016737/python-inheritance-how-to-call-grandparent-method
+
+##==============================[ACCOUNTS.PY]==============================##
+##=========================================================================##
