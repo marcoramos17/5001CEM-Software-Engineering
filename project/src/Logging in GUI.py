@@ -150,7 +150,12 @@ def createAccount():
     placeHolder2 = Text(accWindow)
     guestAccBtn = PushButton(accWindow, text = "Guest login", command = guestLogin )
     
+    ################################################################################
+    ################################# Home Page ####################################
+    ################################################################################
 
+    homePg = Window(loginPg, title = "Authentication Page")
+    
 ####################################################################################
 ############################## User Login ##########################################
 ####################################################################################
@@ -181,11 +186,16 @@ loginPgBtn = Box(loginPg, width = "fill", align = "top")
 
 # empty box to create a space to the left of the buttons 
 pH1 = Box(loginPgBtn, width = "fill", align = "left")
+
 # Submits the username and password in the textboxes 
 continueButton = PushButton(loginPgBtn, text = "Continue", command = userLogin_username_password_dbUsername_dbPassword, align = "left", width = "fill")
 
 # create account button
-CreateAccBtn = PushButton(loginPgBtn, text = "Create Account", command =  createAccount, align = "left", width = "fill") 
+CreateAccBtn = PushButton(loginPgBtn, text = "Create Account", command =  createAccount, align = "left", width = "fill")
+
+# account authentication
+authenticateBtn = PushButton(loginPgBtn, text = "Authenticate Account", command =  createAccount, align = "left", width = "fill")
+
 # empty box to create a space to the right of the buttons
 pH2 = Box(loginPgBtn, width = "fill", align = "left")
 ###########################################################################
