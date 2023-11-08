@@ -51,7 +51,7 @@ db_get_schools():
     Get a list of schools
 
 db_bind_school_teacher():
-    Given a teacher, find their school and update the entry to the teacher
+    OBSELETE
 
 db_get_access_code_from_account():
     Given an account, get their access code
@@ -60,7 +60,7 @@ db_get_access_code_from_school():
     Given a school, get its access code
 
 db_get_teacher_from_username():
-    Given a username, find the teacher for their school
+    OBSELETE 
 
 db_create_account():
     Create an account for a user, this will make both a Users, and Account entry
@@ -149,7 +149,7 @@ from password import *
 import os.path
 
 # To print debug strings
-debug = True
+debug = False
 
 def db_sqlite3_init(f_filename: str) -> tuple [sqlite3.Connection, 
                                                sqlite3.Cursor]:
@@ -238,23 +238,27 @@ def db_bind_school_teacher(f_username: str) -> None:
     db.commit()
     return
 
-def db_get_access_code_from_account(f_username: str) -> str:
-    """
-    This function is return the access code from a username.
-    Whilst it seems this function may not make sense, it is resistant to any ch-
-    anges that we might make to the username generation system.
+'''
+Schema changes have left this function obselete, although it remains in the file
+for reference.
+'''
+# def db_get_access_code_from_account(f_username: str) -> str:
+#     """
+#     This function is return the access code from a username.
+#     Whilst it seems this function may not make sense, it is resistant to any ch-
+#     anges that we might make to the username generation system.
 
-    :param str f_username: The username to grab access code for
-    :return str: The access code
-    """
-    accessCode = dbCursor.execute(
-        "SELECT Schools.accessCode "
-        "FROM Accounts "
-        "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
-        "WHERE Accounts.username = ?",
-        (f_username,) 
-    ).fetchone()[0]
-    return str(accessCode)
+#     :param str f_username: The username to grab access code for
+#     :return str: The access code
+#     """
+#     accessCode = dbCursor.execute(
+#         "SELECT Schools.accessCode "
+#         "FROM Accounts "
+#         "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
+#         "WHERE Accounts.username = ?",
+#         (f_username,) 
+#     ).fetchone()[0]
+#     return str(accessCode)
 
 def db_get_access_code_from_school(f_school: str) -> str:
     """
@@ -271,21 +275,37 @@ def db_get_access_code_from_school(f_school: str) -> str:
     ).fetchone()[0]
     return str(accessCode)
 
-def db_get_teacher_from_username(f_username: str) -> str:
-    '''
-    This function returns the teacher assigned to a school, given any user from
-    that specific school.
+'''
+Schema changes have left this function obselete, although it remains in the file
+for reference.
+'''
+# def db_get_teacher_from_username(f_username: str) -> str:
+#     '''
+#     This function returns the teacher assigned to a school, given any user from
+#     that specific school.
 
-    :param str f_username: The username to check the teacher for
-    :return str: 
-    '''
-    teacher = dbCursor.execute(
-        "SELECT Schools.teacher FROM Accounts "
-        "INNER JOIN Schools ON Schools.schoolID = Accounts.Schools_group "
-        "WHERE Accounts.username = ?", 
-        (f_username,)
-    ).fetchone()[0]
-    return teacher
+#     :param str f_username: The username to check the teacher for
+#     :return str: 
+#     '''
+#     teacher = dbCursor.execute(
+#         "SELECT Schools.teacher FROM Accounts "
+#         "INNER JOIN Schools ON Schools.schoolID = Accounts.Schools_group "
+#         "WHERE Accounts.username = ?", 
+#         (f_username,)
+#     ).fetchone()[0]
+#     return teacher
+
+def db_get_teachers_from_school(f_school: str) -> list[str]:
+    teachersT = dbCursor.execute(
+        "SELECT Accounts.username FROM Accounts "
+        "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
+        "WHERE Accounts.Roles_roleID = 2 "
+        "AND Schools.name = ?",
+        (f_school,)
+    ).fetchall()
+    # Unpack the tuple
+    teachers = [teacher[0] for teacher in teachersT]
+    return teachers
 
 def db_create_account(f_firstName:  str, 
                       f_lastName:   str, 
@@ -563,6 +583,7 @@ def db_read_messages_between(f_userFrom: str,
 
 
 if __name__ == "__main__":
+    debug = True
     '''
     Example usage of some of the above functions, some of these may fail depend-
     ing on the current state of the database. Remove offending rows to stop this
@@ -586,6 +607,13 @@ if __name__ == "__main__":
         #                    'coventryadmin', 
         #                    '582874', 
         #                    '2000-05-12', 
+        #                    'London', 
+        #                    2)
+        # db_create_account('Eric', 
+        #                    'Professorson', 
+        #                    'coventryteacher', 
+        #                    '582874', 
+        #                    '1964-05-12', 
         #                    'London', 
         #                    2)
         # db_create_account('Elizabeth',
@@ -717,6 +745,14 @@ if __name__ == "__main__":
         # newTotp = db_get_user_secret('JimmCric582874')
         # if newTotp.secret == pyotpTotp.secret:
         #     print("The stored and calculated TOTP secrets are equal")
+
+        # ----------------------------------------------------------------------
+        # Get teachers from school
+        # ----------------------------------------------------------------------
+        teachers = db_get_teachers_from_school('Coventry High')
+        print("Teachers at Coventry High:")
+        for teacher in teachers:
+            print(" - " + teacher)
 
         # ----------------------------------------------------------------------
         # 
