@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     logging_biz = accounts.CollectiveAccount(False,
                                    password="testpass123",
-                                   username="PeteSmit829854")
+                                   username="YardCo.100000")
     #biz_acc = accounts.CollectiveAccount(True, "pass345", "Jimmy",
     #                           "J. Junior", "829854", "Yardbird")
     #print("usrnm: \t",biz_acc.username)

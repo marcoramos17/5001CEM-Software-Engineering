@@ -39,6 +39,7 @@ class Account:
         self.date_birth = date_birth
         self.location = location
         self.role_id = role_id
+        print(">>>>>> ACCESS CODE: ", access_code)
         self.username = dtbase.db_create_account(fst_name, lst_name, password,
                                     access_code, date_birth, location, role_id)
 
@@ -70,12 +71,16 @@ class CollectiveAccount(Account):
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.access_code = "100000"
-        self.role_id = 0
-        super().__init__(is_new, password, username, fst_name, lst_name,
-                        self.access_code, date_birth, location)
+        self.role_id = 3
+        super().__init__(is_new,
+                         password = password,
+                         username = username,
+                         fst_name = fst_name,
+                         lst_name = lst_name,
+                         access_code = self.access_code,
+                         date_birth = date_birth,
+                         location = location)
 
-    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
-        print("Business account registration -> ", fst_name, " ", lst_name)
 
 class PersonalAccount(Account):
     """" Class for personal account processes
@@ -97,7 +102,7 @@ class ProfessorAccount(PersonalAccount):
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         #self.access_code = "999999"
-        self.role_id = 0
+        self.role_id = 1
         super(Account).__init__(is_new, password, username, fst_name, lst_name,
                         self.access_code, date_birth, location)
 
@@ -111,12 +116,13 @@ class StudentAccount(PersonalAccount):
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         #self.access_code = "999999"
-        self.role_id = 0
+        self.role_id = 1
         super(Account).__init__(is_new, password, username, fst_name, lst_name,
                         self.access_code, date_birth, location)
 
     def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
         print("Business account registration -> ", fst_name, " ", lst_name)
+
 
 
 class GuestAccount(PersonalAccount):
@@ -125,7 +131,7 @@ class GuestAccount(PersonalAccount):
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         #self.access_code = "999999"
-        self.role_id = 0
+        self.role_id = 1
         super(Account).__init__(is_new, password, username, fst_name, lst_name,
                         self.access_code, date_birth, location)
 
@@ -141,7 +147,7 @@ class SchoolAccount(CollectiveAccount):
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         #self.access_code = "999999"
-        self.role_id = 0
+        self.role_id = 1
         super(Account).__init__(is_new, password, username, fst_name, lst_name,
                         self.access_code, date_birth, location)
 
@@ -153,7 +159,7 @@ class BusinessAccount(CollectiveAccount):
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         #self.access_code = "999999"
-        self.role_id = 0
+        self.role_id = 1
         super(Account).__init__(is_new, password, username, fst_name, lst_name,
                         self.access_code, date_birth, location)
 
