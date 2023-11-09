@@ -309,6 +309,11 @@ def db_get_teachers_from_school(f_school: str) -> list[str]:
     teachers = [teacher[0] for teacher in teachersT]
     return teachers
 
+def generate_username(f_firstName:  str,
+                      f_lastName:   str,
+                      f_acesssCode: str) -> str:
+    return f_firstName[:4] + f_lastName[:4] + f_acesssCode
+
 def db_create_account(f_firstName:  str, 
                       f_lastName:   str, 
                       f_password:   str, 
