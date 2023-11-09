@@ -1,25 +1,24 @@
 """All account related code - documentation #07"""
-import database.py
+import database as dtbase
 
 class Account:
     """
     Class for general account processes
     """
 
-    def __init__(self, is_new, password, username = "",
-                fst_name = "", lst_name = "", access_code = "",
-                date_birth = "", location = ""):
+    def __init__(self, is_new, password, fst_name = "", lst_name = "",
+                access_code = "", date_birth = "", location = "", username = "",):
         """
         Constructor for the Account objects
         """
-        self.username = username
         self.role_id = 0
 
         if is_new:
+            print(">> REGISTERING")
             self.register(fst_name, lst_name, password,
                           access_code, date_birth, location, self.role_id)
-
         else:
+            print(">> LOGGING IN")
             self.login(username, password)
 
 
@@ -27,7 +26,6 @@ class Account:
                 access_code, date_birth, location, role_id ):
         """ user registration function """
         print("Regular account - registration -> ", fst_name, " ", lst_name)
-        #self.username = <call Dylan's create account>
 
         self.fst_name = fst_name
         self.lst_name = lst_name
@@ -35,7 +33,9 @@ class Account:
         self.date_birth = date_birth
         self.location = location
         self.role_id = role_id
-        # send to Dylan's function WITH PASSWORD
+        self.username = dtbase.db_create_account(fst_name, lst_name, password,
+                                    access_code, date_birth, location, role_id)
+        
         del password
 
     def login(self, username, password):
