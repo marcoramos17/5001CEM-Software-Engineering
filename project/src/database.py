@@ -312,6 +312,12 @@ def db_get_teachers_from_school(f_school: str) -> list[str]:
     teachers = [teacher[0] for teacher in teachersT]
     return teachers
 
+def generate_username(f_firstName:  str,
+                      f_lastName:   str,
+                      f_acesssCode: str) -> str:
+    username = f_firstName[:4] + f_lastName[:4] + f_acesssCode
+    return username
+
 def db_create_account(f_firstName:  str, 
                       f_lastName:   str, 
                       f_password:   str, 
@@ -351,12 +357,7 @@ def db_create_account(f_firstName:  str,
     schoolID = schoolID[0]
     
     # Username generation rule, is unique (enough in this prototype)
-    try:
-        username = f_firstName[:4] + f_lastName[:4] + f_acesssCode
-    except:
-        username =  f_firstName.ljust(4, 'x')[:4] + \
-                    f_lastName.ljust(4, 'x')[:4] + \
-                    f_acesssCode
+    username = generate_username(f_firstName, f_lastName, f_acesssCode)
 
     # Get our salt
     salt = generate_salt()
