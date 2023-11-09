@@ -3,6 +3,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 from PIL import Image
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import keras
 from keras import Sequential
 from keras.layers import Conv2D,\
                         MaxPooling2D,\
@@ -14,18 +15,18 @@ import numpy as np
 import cv2
 
 rootDir = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0]
-animalsDir = rootDir + "\\data\\animals\\"
+animalsDir = rootDir + "/data/animals/"
 
 # Only run if the data has been cached previously
-# animals = np.load(rootDir + "\\data\\animalCache.npy")
-# labels  = np.load(rootDir + "\\data\\labelsCache.npy")
+animals = np.load(rootDir + "/data/animalCache.npy")
+labels  = np.load(rootDir + "/data/labelsCache.npy")
 
-# randomShuffle = np.arange(len(animals))
-# rngShuffle = np.random.permutation(len(animals))
-# animals = animals[rngShuffle]
-# labels = labels[rngShuffle]
+randomShuffle = np.arange(len(animals))
+rngShuffle = np.random.permutation(len(animals))
+animals = animals[rngShuffle]
+labels = labels[rngShuffle]
 
-with open(rootDir + "\\data\\animals\\names.txt", 'r') as names:
+with open(animalsDir + "names.txt", 'r') as names:
     animalNames = []
     for name in names:
         animalNames.append(name.rstrip('\n'))
@@ -51,12 +52,12 @@ for animal in animalNames:
 animals=np.array(animals)
 labels=np.array(labels)
 
-np.save(rootDir + "\\data\\animalCache",animals)
-np.save(rootDir + "\\data\\labelsCache",labels)
+np.save(rootDir + "/data/animalCache",animals)
+np.save(rootDir + "/data/labelsCache",labels)
 print("done caching arrays")'''
 # END USE
 
-'''
+
 # Get the size of the dataset, and the number of different animals
 classesAmount = len(animalNames)
 dataSize      = len(animals)
@@ -80,12 +81,12 @@ test_length  = len(x_test)
 # re is no ordering between the class labels\
 y_train = tf.keras.utils.to_categorical(y_train, classesAmount)
 y_test  = tf.keras.utils.to_categorical(y_test,  classesAmount)
-'''
+
 
 # USE the below code if training hasn't been performed yet
 # These parameters are a combination of various configurations that I have seen
 # online whilst passing through various CNN optimation pages
-'''data_augmentation = tf.keras.Sequential([
+data_augmentation = tf.keras.Sequential([
   tf.keras.layers.RandomFlip("horizontal_and_vertical"),
   tf.keras.layers.RandomRotation(0.2),
 ])
@@ -108,18 +109,18 @@ trainingModel.compile(loss='categorical_crossentropy',
                       optimizer='adam', 
                       metrics=['accuracy'])
 
-trainingModel.fit(x_train, 
-                  y_train, 
-                  batch_size = 100,
-                  epochs = 100,
-                  validation_data = (x_test, y_test))
-
-# Save the trained model to file, to skip training later
-trainingModel.save(rootDir + "\\data\\model2.keras")'''
+# trainingModel.fit(x_train, 
+#                   y_train, 
+#                   batch_size = 100,
+#                   epochs = 100,
+#                   validation_data = (x_test, y_test))
+#
+# # Save the trained model to file, to skip training later
+# trainingModel.save(rootDir + "/data/model2.keras")
 
 # END USE
 # Use if model has been trained already
-trainingModel = tf.keras.models.load_model(rootDir + "\\data\\model2.keras")
+trainingModel = keras.models.load_model(rootDir + "/data/model2.keras")
 
 def image_to_array(f_imagePath: str) -> np.ndarray:
     cv2Image = cv2.imread(f_imagePath)
@@ -155,5 +156,6 @@ def make_animal_prediction_to_user(f_filePath: str) -> tuple[str, str]:
 
 
 if __name__ == "__main__":
-    animal, acc = predict_animal_from_file(animalsDir + "cat\\0b54dde5f5.jpg")
-    print("Prediction: {}\nAccuracy: {}".format(animal, acc)) 
+    # animal, acc = predict_animal_from_file(animalsDir + "cat/0b54dde5f5.jpg")
+    # print("Prediction: {}\nAccuracy: {}".format(animal, acc))
+    None

@@ -12,7 +12,7 @@ def get_file():
 app = App()
 
 picture = Picture(app, 
-                  image="C:\\Users\\dylancal\\Documents\\5001CEM\\project\\data\\animals\\cat\\0b54dde5f5.jpg",
+                  image= rootDir + "/data/classifierSplash.png",
                   width=300,
                   height=300)
 animalMessage = Text(app, text = "Animal: ")
