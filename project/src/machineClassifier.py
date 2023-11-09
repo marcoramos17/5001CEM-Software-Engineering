@@ -86,28 +86,29 @@ y_test  = tf.keras.utils.to_categorical(y_test,  classesAmount)
 # USE the below code if training hasn't been performed yet
 # These parameters are a combination of various configurations that I have seen
 # online whilst passing through various CNN optimation pages
-data_augmentation = tf.keras.Sequential([
-  tf.keras.layers.RandomFlip("horizontal_and_vertical"),
-  tf.keras.layers.RandomRotation(0.2),
-])
 
-trainingModel = Sequential()
-trainingModel.add(Conv2D(16, 2, activation = "relu", input_shape=(64, 64, 3)))
-trainingModel.add(MaxPooling2D())
-trainingModel.add(Conv2D(32, 2, activation = "relu", padding="same"))
-trainingModel.add(MaxPooling2D())
-trainingModel.add(Conv2D(64, 2, activation = "relu", padding="same"))
-trainingModel.add(MaxPooling2D())
-# I have read that this helps to protect against overfitting
-trainingModel.add(Dropout(0.5))
-trainingModel.add(Flatten())
-trainingModel.add(Dense(512, activation = "relu"))
-trainingModel.add(Dropout(0.5))
-trainingModel.add(Dense(classesAmount, activation = "softmax"))
+# data_augmentation = tf.keras.Sequential([
+#   tf.keras.layers.RandomFlip("horizontal_and_vertical"),
+#   tf.keras.layers.RandomRotation(0.2),
+# ])
 
-trainingModel.compile(loss='categorical_crossentropy', 
-                      optimizer='adam', 
-                      metrics=['accuracy'])
+# trainingModel = Sequential()
+# trainingModel.add(Conv2D(16, 2, activation = "relu", input_shape=(64, 64, 3)))
+# trainingModel.add(MaxPooling2D())
+# trainingModel.add(Conv2D(32, 2, activation = "relu", padding="same"))
+# trainingModel.add(MaxPooling2D())
+# trainingModel.add(Conv2D(64, 2, activation = "relu", padding="same"))
+# trainingModel.add(MaxPooling2D())
+# # I have read that this helps to protect against overfitting
+# trainingModel.add(Dropout(0.5))
+# trainingModel.add(Flatten())
+# trainingModel.add(Dense(512, activation = "relu"))
+# trainingModel.add(Dropout(0.5))
+# trainingModel.add(Dense(classesAmount, activation = "softmax"))
+
+# trainingModel.compile(loss='categorical_crossentropy', 
+#                       optimizer='adam', 
+#                       metrics=['accuracy'])
 
 # trainingModel.fit(x_train, 
 #                   y_train, 
@@ -120,7 +121,7 @@ trainingModel.compile(loss='categorical_crossentropy',
 
 # END USE
 # Use if model has been trained already
-trainingModel = keras.models.load_model(rootDir + "/data/ML/model2.keras")
+trainingModel = keras.models.load_model(rootDir + "/data/ML/modelLinux.keras")
 
 def image_to_array(f_imagePath: str) -> np.ndarray:
     cv2Image = cv2.imread(f_imagePath)

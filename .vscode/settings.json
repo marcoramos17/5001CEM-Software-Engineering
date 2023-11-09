@@ -13,5 +13,5 @@
     "python.testing.unittestEnabled": true,
     "autoDocstring.docstringFormat": "sphinx",
     "python.analysis.typeCheckingMode": "basic",
-    "python.languageServer": "Jedi"
+    "python.languageServer": "Pylance"
 }
