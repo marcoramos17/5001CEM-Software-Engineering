@@ -79,14 +79,15 @@ db_update_password():
 
 db_read_account_data():
     Given a user, return a tuple of their account data in this order:
-        0   First Name,             The user's first name
-        1   Last Name,              The user's last name
-        2   Date of Birth,          The user's date of birth 
-        3   Location,               Real world location of the user
-        4   School ID (INTEGER),    The school ID that is used in functions
-        5   School (String),        The name of that school, for easy printing
-        6   Role ID (INTEGER),      The role ID used in functions
-        7   Role (String),          The name of the role, for easy printing
+        0   Username                The username
+        1   First Name,             The user's first name
+        2   Last Name,              The user's last name
+        3   Date of Birth,          The user's date of birth 
+        4   Location,               Real world location of the user
+        5   School ID (INTEGER),    The school ID that is used in functions
+        6   School (String),        The name of that school, for easy printing
+        7   Role ID (INTEGER),      The role ID used in functions
+        8   Role (String),          The name of the role, for easy printing
         
 db_print_account_data():
     Expansion on previous, mainly for demonstration purposes
