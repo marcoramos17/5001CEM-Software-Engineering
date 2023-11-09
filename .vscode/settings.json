@@ -12,5 +12,6 @@
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
     "autoDocstring.docstringFormat": "sphinx",
-    "python.analysis.typeCheckingMode": "basic"
+    "python.analysis.typeCheckingMode": "basic",
+    "python.languageServer": "Pylance"
 }
