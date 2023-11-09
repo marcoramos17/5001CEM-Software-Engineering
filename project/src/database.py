@@ -108,6 +108,9 @@ db_read_messages_between():
         2   Body of message,
         3   Timestamp
 
+db_check_username_exists():
+    Check that a username exists, either true or false
+
 --------------------------------------------------------------------------------
  - - - - - - - - - - - - - - - - CALLING ORDER - - - - - - - - - - - - - - - - -
 --------------------------------------------------------------------------------
