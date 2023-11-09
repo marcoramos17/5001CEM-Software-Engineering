@@ -18,8 +18,8 @@ rootDir = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0]
 animalsDir = rootDir + "/data/animals/"
 
 # Only run if the data has been cached previously
-animals = np.load(rootDir + "/data/animalCache.npy")
-labels  = np.load(rootDir + "/data/labelsCache.npy")
+animals = np.load(rootDir + "/data/ML/animalCache.npy")
+labels  = np.load(rootDir + "/data/ML/labelsCache.npy")
 
 randomShuffle = np.arange(len(animals))
 rngShuffle = np.random.permutation(len(animals))
@@ -40,9 +40,9 @@ animals = []
 labels = []
 counter = 0
 for animal in animalNames:
-    fileList = os.listdir(rootDir + "\\data\\animals\\" + animal)
+    fileList = os.listdir(rootDir + "/data/animals/" + animal)
     for image in fileList:
-        cv2Image = cv2.imread(rootDir + "\\data\\animals\\" + animal + "\\" + image)
+        cv2Image = cv2.imread(rootDir + "/data/animals/" + animal + "/" + image)
         PILImage = Image.fromarray(cv2Image, 'RGB')
         resizedImage = PILImage.resize((64, 64))
         animals.append(np.array(resizedImage))
@@ -52,8 +52,8 @@ for animal in animalNames:
 animals=np.array(animals)
 labels=np.array(labels)
 
-np.save(rootDir + "/data/animalCache",animals)
-np.save(rootDir + "/data/labelsCache",labels)
+np.save(rootDir + "/data/ML/animalCache",animals)
+np.save(rootDir + "/data/ML/labelsCache",labels)
 print("done caching arrays")'''
 # END USE
 
@@ -120,7 +120,7 @@ trainingModel.compile(loss='categorical_crossentropy',
 
 # END USE
 # Use if model has been trained already
-trainingModel = keras.models.load_model(rootDir + "/data/model2.keras")
+trainingModel = keras.models.load_model(rootDir + "/data/ML/model2.keras")
 
 def image_to_array(f_imagePath: str) -> np.ndarray:
     cv2Image = cv2.imread(f_imagePath)

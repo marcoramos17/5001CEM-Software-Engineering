@@ -12,7 +12,7 @@ def get_file():
 app = App()
 
 picture = Picture(app, 
-                  image= rootDir + "/data/classifierSplash.png",
+                  image= rootDir + "/data/ML/classifierSplash.png",
                   width=300,
                   height=300)
 animalMessage = Text(app, text = "Animal: ")
