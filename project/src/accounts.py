@@ -7,16 +7,20 @@ class Account:
     """
 
     def __init__(self, is_new, password, fst_name = "", lst_name = "",
-                access_code = "", date_birth = "", location = "", username = "",):
+                access_code = "", date_birth = "", location = "", username = ""):
         """
         Constructor for the Account objects
         """
         self.role_id = 0
 
         if is_new:
-            print(">> REGISTERING")
-            self.register(fst_name, lst_name, password,
+            self.username = dtbase.generate_username(fst_name,lst_name, access_code)
+            if not dtbase.db_check_username_exists(self.username):
+                self.register(fst_name, lst_name, password,
                           access_code, date_birth, location, self.role_id)
+
+            else:
+                print("Temporary Err Message - Account already exists")
         else:
             print(">> LOGGING IN")
             self.login(username, password)
