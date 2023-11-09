@@ -685,8 +685,9 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # Print account data example (debug)
         # ----------------------------------------------------------------------
-        # db_print_account_data("JimmCric582874")
-        # db_print_account_data("TeacCovs582874")
+        db_print_account_data("JimmCric582874")
+        db_print_account_data("TeacCovs582874")
+        db_print_account_data("JohnSmit829854")
 
         # ----------------------------------------------------------------------
         # Get teacher from username example
