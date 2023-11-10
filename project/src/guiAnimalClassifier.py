@@ -1,4 +1,4 @@
-from machineClassifier import *
+from mlearnTrainer import *
 
 from guizero import App, Text, PushButton, Picture
 
