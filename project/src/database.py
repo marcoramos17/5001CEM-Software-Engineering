@@ -568,7 +568,79 @@ def db_send_message(f_userFrom: str,
     # Ensure that changes are committed to the DB
     db.commit()
     return
-    
+################################################################################
+################################################################################
+# The following work is compelted by Aiden
+def db_send_to_forum(f_username: str,
+                     f_title:    str,
+                     f_body:     str) -> None:
+    """
+    AIDENS WORK
+    """
+    # Insert data into table
+    dbCursor.execute(
+        "INSERT INTO ForumItems ("
+        "Accounts_authorID, "
+        "title, "
+        "body) "
+        "VALUES (?, ?, ?)", 
+        (f_username, f_title, f_body)
+    )
+    # Ensure that changes are committed to the DB
+    db.commit()
+    return
+
+def db_reply_to_forum(f_postID:   int,
+                      f_username: str,
+                      f_title:    str,
+                      f_body:     str) -> None:
+    """
+    AIDENS WORK
+    """
+    dbCursor.execute(
+        "INSERT INTO ForumReplies ("
+            "ForumItems_postID, "
+            "Accounts_authorID, "
+            "title, "
+            "body) "
+        "VALUES (?, ?, ?, ?)",
+        (f_postID, f_username, f_title, f_body)
+    )
+    db.commit()
+
+def db_get_forum_items() -> list[tuple[int,
+                                       str,
+                                       str,
+                                       str,
+                                       str]]:
+    """
+    AIDENS WORK
+    """
+    messages = dbCursor.execute(
+        "SELECT * FROM ForumItems "
+        "ORDER BY postID DESC"
+    ).fetchall()
+    return messages
+
+def db_get_forum_replies(f_postID: int) -> list[tuple[int,
+                                                      int,
+                                                      str,
+                                                      str,
+                                                      str,
+                                                      str]]:
+    """
+    AIDENS WORK
+    """
+    messages = dbCursor.execute(
+        "SELECT * FROM ForumReplies "
+        "WHERE ForumItems_postID = ?",
+        (f_postID,)
+    ).fetchall()
+    return messages
+
+################################################################################
+################################################################################
+
 def db_get_inbox_users(f_username: str) -> list[tuple[str]]:
     '''
     This function is used to get the list of users in the DMs section for a giv-
@@ -704,10 +776,10 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # Print account data example (debug)
         # ----------------------------------------------------------------------
-        db_print_account_data("JimmCric582874")
-        db_print_account_data("TeacCovs582874")
-        db_print_account_data("EricProf582874")
-        db_print_account_data("JohnSmit829854")
+        # db_print_account_data("JimmCric582874")
+        # db_print_account_data("TeacCovs582874")
+        # db_print_account_data("EricProf582874")
+        # db_print_account_data("JohnSmit829854")
 
         # ----------------------------------------------------------------------
         # Get teacher from username example
