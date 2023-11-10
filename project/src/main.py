@@ -38,8 +38,8 @@ if __name__ == "__main__":
                                          access_code="829854",
                                          date_birth="1980-12-13",
                                          location="Classroom")
-    print("usrnm: \t",new_biz.username)
+    print("usrnm: \t",new_prof.username)
 
     logging_prof = accounts.ProfessorAccount(False,
                                    password="testpass123",
-                                   username="YardCo.100000")
+                                   username="TimmH829854")

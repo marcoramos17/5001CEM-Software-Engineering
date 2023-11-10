@@ -50,7 +50,7 @@ class Account:
         self.username = username
         #check login through Dylan's login function
         if dtbase.db_check_account_login(self.username, password):
-            print(">> Log In successful!!")
+            print(">> ",username," Logged In successful!!")
             user_details = dtbase.db_read_account_data(self.username)
             self.fst_name = user_details[1]
             self.lst_name = user_details[2]
@@ -93,13 +93,14 @@ class PersonalAccount(Account):
                          fst_name = fst_name,
                          lst_name = lst_name,
                          date_birth = date_birth,
+                         access_code = access_code,
                          location = location)
 
 
 class ProfessorAccount(PersonalAccount):
     """" Class for professor account processes (include the ability
     to send quizzes and tasks to student accounts) """
-    def __init__(self, is_new, password, username = "", access_code = "829854",
+    def __init__(self, is_new, password, username = "", access_code = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.role_id = 2
         super().__init__(is_new,
@@ -117,13 +118,15 @@ class StudentAccount(PersonalAccount):
     (include the ability to complete quizzes or minigames) """
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
-        #self.access_code = "999999"
-        self.role_id = 1
-        super(Account).__init__(is_new, password, username, fst_name, lst_name,
-                        self.access_code, date_birth, location)
-
-    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
-        print("Business account registration -> ", fst_name, " ", lst_name)
+        self.role_id = 2
+        super().__init__(is_new,
+                         password = password,
+                         username = username,
+                         fst_name = fst_name,
+                         lst_name = lst_name,
+                         access_code = access_code,
+                         date_birth = date_birth,
+                         location = location)
 
 
 
@@ -148,22 +151,26 @@ class SchoolAccount(CollectiveAccount):
     and represent the school entity)"""
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
-        #self.access_code = "999999"
-        self.role_id = 1
-        super(Account).__init__(is_new, password, username, fst_name, lst_name,
-                        self.access_code, date_birth, location)
-
-    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
-        print("Business account registration -> ", fst_name, " ", lst_name)
+        self.role_id = 2
+        super().__init__(is_new,
+                         password = password,
+                         username = username,
+                         fst_name = fst_name,
+                         lst_name = lst_name,
+                         access_code = access_code,
+                         date_birth = date_birth,
+                         location = location)
 
 class BusinessAccount(CollectiveAccount):
     """" Class for business account processes (accounts owned by businesses) """
     def __init__(self, is_new, password, username = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
-        #self.access_code = "999999"
-        self.role_id = 1
-        super(Account).__init__(is_new, password, username, fst_name, lst_name,
-                        self.access_code, date_birth, location)
-
-    def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
-        print("Business account registration -> ", fst_name, " ", lst_name)
+        self.role_id = 2
+        super().__init__(is_new,
+                         password = password,
+                         username = username,
+                         fst_name = fst_name,
+                         lst_name = lst_name,
+                         access_code = access_code,
+                         date_birth = date_birth,
+                         location = location)
