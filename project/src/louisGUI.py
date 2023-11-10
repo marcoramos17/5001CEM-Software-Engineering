@@ -325,11 +325,11 @@ def profilesPage():
             
         # display name text box 
         displayName = Text(chngeDetBox, text = "Enter your display name", align = "top")
-        displayNameTB = TextBox(chngeDetBox, width = "40", align = "top")
+        displayNameTB = TextBox(chngeDetBox, width = 40, align = "top")
 
         # bio text box
         bio = Text(chngeDetBox, text = "Enter your bio", align = "top")
-        bioTB = TextBox(chngeDetBox, width = "40", align = "top")        
+        bioTB = TextBox(chngeDetBox, width = 40, align = "top")        
 
         # creates a blank gap 
         placeHolder1 = Text(chngeDetBox)
@@ -367,8 +367,6 @@ def profilesPage():
         notificationsPic = Picture(notificationsPg, image = "notifications.png")
 
     profilesPg = Window(loginPg, title = "Profiles Page")
-
-    
     
     ################################################################################
     
@@ -412,11 +410,11 @@ placeHolder1 = Text(loginPg)
 
 #username textbox
 email = Text(loginPg, text="Enter your Username")
-usernameTB = TextBox(loginPg, width = "40")
+usernameTB = TextBox(loginPg, width = 40)
 
 #password textbox
 password = Text(loginPg, text="Enter your Password")
-passwordTB = TextBox(loginPg, width = "40")
+passwordTB = TextBox(loginPg, width = 40)
 
 # creates a blank gap 
 placeHolder2 = Text(loginPg)
