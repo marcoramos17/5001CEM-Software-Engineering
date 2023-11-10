@@ -88,6 +88,7 @@ db_read_account_data():
         6   School (String),        The name of that school, for easy printing
         7   Role ID (INTEGER),      The role ID used in functions
         8   Role (String),          The name of the role, for easy printing
+        9   Email                   The email of the user
         
 db_print_account_data():
     Expansion on previous, mainly for demonstration purposes
@@ -325,7 +326,8 @@ def db_create_account(f_firstName:  str,
                       f_acesssCode: str,
                       f_dob:        str,
                       f_location:   str,
-                      f_role:       int) -> str:
+                      f_role:       int,
+                      f_email:      None | str = None) -> str:
     """
     This function is used to add an account to the database.
 
@@ -336,6 +338,7 @@ def db_create_account(f_firstName:  str,
     :param str dob: Date of birth of the user
     :param str location: Location of the user
     :param int role: The role ID of the user
+    :param int email: The email of the user (can be null)
     :return str: The generated username from account creation
     """
     # Use statments on the cursor, remembering to use placeholders (?) to 
@@ -368,9 +371,10 @@ def db_create_account(f_firstName:  str,
     # Then create our account
     dbCursor.execute(
         "INSERT INTO Accounts "
-        "(salt, password, username, Roles_roleID, Users_userID, Schools_group) "
-        "VALUES (?, ?, ?, ?, ?, ?)",
-        (salt, password, username, f_role, dbCursor.lastrowid, schoolID)
+        "(salt, password, username, Roles_roleID, "
+        "Users_userID, Schools_group, email) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (salt, password, username, f_role, dbCursor.lastrowid, schoolID, f_email)
     )
     
     # Commit writes
@@ -474,6 +478,7 @@ def db_read_account_data(f_username: str) -> tuple [str,
                                                     str, 
                                                     str, 
                                                     str, 
+                                                    str,
                                                     str]:
     """
     This function is used to read account data for a user, from the database.
@@ -492,13 +497,24 @@ def db_read_account_data(f_username: str) -> tuple [str,
             "Accounts.Schools_group, "
             "Schools.name, "
             "Accounts.Roles_roleID, "
-            "Roles.description "
+            "Roles.description, "
+            "Accounts.email "
         "FROM Users "
         "INNER JOIN Accounts ON Accounts.Users_userID = Users.userID "
         "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
         "INNER JOIN Roles ON Accounts.Roles_roleID = Roles.roleID "
         "WHERE Accounts.username = ?", (f_username,)
     ).fetchone()
+    try:
+        if account[9] == None:
+            laccount = list(account)
+            laccount[9] = 'No Email'
+            account = tuple(laccount)
+    except:
+        raise Exception(
+            "IN 'print_account_data()': Account {} does not exist"
+            .format(f_username)
+        )
     return account 
 
 def db_print_account_data(f_username: str) -> None:
@@ -518,15 +534,17 @@ def db_print_account_data(f_username: str) -> None:
         "School ID: {}\n"
         "School Name: {}\n"
         "Role ID: {}\n"
-        "Role Name: {}\n".format(loggedIn[0],
-                                    loggedIn[1],
-                                    loggedIn[2],
-                                    loggedIn[3],
-                                    loggedIn[4],
-                                    loggedIn[5],
-                                    loggedIn[6],
-                                    loggedIn[7],
-                                    loggedIn[8]))
+        "Role Name: {}\n"
+        "Email: {}\n".format(loggedIn[0],
+                             loggedIn[1],
+                             loggedIn[2],
+                             loggedIn[3],
+                             loggedIn[4],
+                             loggedIn[5],
+                             loggedIn[6],
+                             loggedIn[7],
+                             loggedIn[8],
+                             loggedIn[9]))
 
 def db_send_message(f_userFrom: str,
                     f_userTo:   str,
@@ -611,7 +629,6 @@ def db_check_username_exists(f_username: str) -> bool:
     return bool(exists)
 
 if __name__ == "__main__":
-    debug = True
     '''
     Example usage of some of the above functions, some of these may fail depend-
     ing on the current state of the database. Remove offending rows to stop this
@@ -620,6 +637,7 @@ if __name__ == "__main__":
     is going on in some of the functions.
     '''
     try:
+        debug = True
         # ----------------------------------------------------------------------
         # Create an account examples
         # ----------------------------------------------------------------------
@@ -643,7 +661,8 @@ if __name__ == "__main__":
         #                    '582874', 
         #                    '1964-05-12', 
         #                    'London', 
-        #                    2)
+        #                    2,
+        #                    "email@test.com")
         # db_create_account('Elizabeth',
         #                     'Brummie',
         #                     'iLoveBirmingham!',
@@ -664,9 +683,9 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # Check username/password combinations example
         # ----------------------------------------------------------------------
-        # Correct password
+        # # Correct password
         # print(db_check_account_login('JimmCric582874', 'ilovepeas'))
-        # Incorrect password
+        # # Incorrect password
         # print(db_check_account_login('JimmCric582874', 'ilovepeasWRONG'))
 
         # ----------------------------------------------------------------------
@@ -685,9 +704,10 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # Print account data example (debug)
         # ----------------------------------------------------------------------
-        # db_print_account_data("JimmCric582874")
-        # db_print_account_data("TeacCovs582874")
-        # db_print_account_data("JohnSmit829854")
+        db_print_account_data("JimmCric582874")
+        db_print_account_data("TeacCovs582874")
+        db_print_account_data("EricProf582874")
+        db_print_account_data("JohnSmit829854")
 
         # ----------------------------------------------------------------------
         # Get teacher from username example
@@ -806,7 +826,6 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # 
         # ----------------------------------------------------------------------
-        print('')
     except Exception as err:
         print("ERROR:\n", err)
     dbCursor.close()
