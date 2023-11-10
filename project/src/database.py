@@ -51,7 +51,7 @@ db_get_schools():
     Get a list of schools
 
 db_bind_school_teacher():
-    Given a teacher, find their school and update the entry to the teacher
+    OBSELETE
 
 db_get_access_code_from_account():
     Given an account, get their access code
@@ -60,7 +60,7 @@ db_get_access_code_from_school():
     Given a school, get its access code
 
 db_get_teacher_from_username():
-    Given a username, find the teacher for their school
+    OBSELETE 
 
 db_create_account():
     Create an account for a user, this will make both a Users, and Account entry
@@ -79,14 +79,16 @@ db_update_password():
 
 db_read_account_data():
     Given a user, return a tuple of their account data in this order:
-        0   First Name,             The user's first name
-        1   Last Name,              The user's last name
-        2   Date of Birth,          The user's date of birth 
-        3   Location,               Real world location of the user
-        4   School ID (INTEGER),    The school ID that is used in functions
-        5   School (String),        The name of that school, for easy printing
-        6   Role ID (INTEGER),      The role ID used in functions
-        7   Role (String),          The name of the role, for easy printing
+        0   Username                The username
+        1   First Name,             The user's first name
+        2   Last Name,              The user's last name
+        3   Date of Birth,          The user's date of birth 
+        4   Location,               Real world location of the user
+        5   School ID (INTEGER),    The school ID that is used in functions
+        6   School (String),        The name of that school, for easy printing
+        7   Role ID (INTEGER),      The role ID used in functions
+        8   Role (String),          The name of the role, for easy printing
+        9   Email                   The email of the user
         
 db_print_account_data():
     Expansion on previous, mainly for demonstration purposes
@@ -107,6 +109,9 @@ db_read_messages_between():
         1   Username of recipient,
         2   Body of message,
         3   Timestamp
+
+db_check_username_exists():
+    Check that a username exists, either true or false
 
 --------------------------------------------------------------------------------
  - - - - - - - - - - - - - - - - CALLING ORDER - - - - - - - - - - - - - - - - -
@@ -149,7 +154,7 @@ from password import *
 import os.path
 
 # To print debug strings
-debug = True
+debug = False
 
 def db_sqlite3_init(f_filename: str) -> tuple [sqlite3.Connection, 
                                                sqlite3.Cursor]:
@@ -238,6 +243,10 @@ def db_bind_school_teacher(f_username: str) -> None:
     db.commit()
     return
 
+'''
+Schema changes have left this function obselete, although it remains in the file
+for reference.
+'''
 def db_get_access_code_from_account(f_username: str) -> str:
     """
     This function is return the access code from a username.
@@ -258,6 +267,7 @@ def db_get_access_code_from_account(f_username: str) -> str:
 
 def db_get_access_code_from_school(f_school: str) -> str:
     """
+    OBSELETE
     This function is used get the access code for a school
 
     :param str f_username: Name of the school to grab the access code for
@@ -271,8 +281,13 @@ def db_get_access_code_from_school(f_school: str) -> str:
     ).fetchone()[0]
     return str(accessCode)
 
+'''
+Schema changes have left this function obselete, although it remains in the file
+for reference.
+'''
 def db_get_teacher_from_username(f_username: str) -> str:
     '''
+    OBSELETE
     This function returns the teacher assigned to a school, given any user from
     that specific school.
 
@@ -287,13 +302,32 @@ def db_get_teacher_from_username(f_username: str) -> str:
     ).fetchone()[0]
     return teacher
 
+def db_get_teachers_from_school(f_school: str) -> list[str]:
+    teachersT = dbCursor.execute(
+        "SELECT Accounts.username FROM Accounts "
+        "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
+        "WHERE Accounts.Roles_roleID = 2 "
+        "AND Schools.name = ?",
+        (f_school,)
+    ).fetchall()
+    # Unpack the tuple
+    teachers = [teacher[0] for teacher in teachersT]
+    return teachers
+
+def generate_username(f_firstName:  str,
+                      f_lastName:   str,
+                      f_acesssCode: str) -> str:
+    username = f_firstName[:4] + f_lastName[:4] + f_acesssCode
+    return username
+
 def db_create_account(f_firstName:  str, 
                       f_lastName:   str, 
                       f_password:   str, 
                       f_acesssCode: str,
                       f_dob:        str,
                       f_location:   str,
-                      f_role:       int) -> str:
+                      f_role:       int,
+                      f_email:      None | str = None) -> str:
     """
     This function is used to add an account to the database.
 
@@ -304,6 +338,7 @@ def db_create_account(f_firstName:  str,
     :param str dob: Date of birth of the user
     :param str location: Location of the user
     :param int role: The role ID of the user
+    :param int email: The email of the user (can be null)
     :return str: The generated username from account creation
     """
     # Use statments on the cursor, remembering to use placeholders (?) to 
@@ -326,12 +361,7 @@ def db_create_account(f_firstName:  str,
     schoolID = schoolID[0]
     
     # Username generation rule, is unique (enough in this prototype)
-    try:
-        username = f_firstName[:4] + f_lastName[:4] + f_acesssCode
-    except:
-        username =  f_firstName.ljust(4, 'x')[:4] + \
-                    f_lastName.ljust(4, 'x')[:4] + \
-                    f_acesssCode
+    username = generate_username(f_firstName, f_lastName, f_acesssCode)
 
     # Get our salt
     salt = generate_salt()
@@ -341,9 +371,10 @@ def db_create_account(f_firstName:  str,
     # Then create our account
     dbCursor.execute(
         "INSERT INTO Accounts "
-        "(salt, password, username, Roles_roleID, Users_userID, Schools_group) "
-        "VALUES (?, ?, ?, ?, ?, ?)",
-        (salt, password, username, f_role, dbCursor.lastrowid, schoolID)
+        "(salt, password, username, Roles_roleID, "
+        "Users_userID, Schools_group, email) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (salt, password, username, f_role, dbCursor.lastrowid, schoolID, f_email)
     )
     
     # Commit writes
@@ -447,6 +478,7 @@ def db_read_account_data(f_username: str) -> tuple [str,
                                                     str, 
                                                     str, 
                                                     str, 
+                                                    str,
                                                     str]:
     """
     This function is used to read account data for a user, from the database.
@@ -465,13 +497,24 @@ def db_read_account_data(f_username: str) -> tuple [str,
             "Accounts.Schools_group, "
             "Schools.name, "
             "Accounts.Roles_roleID, "
-            "Roles.description "
+            "Roles.description, "
+            "Accounts.email "
         "FROM Users "
         "INNER JOIN Accounts ON Accounts.Users_userID = Users.userID "
         "INNER JOIN Schools ON Accounts.Schools_group = Schools.schoolID "
         "INNER JOIN Roles ON Accounts.Roles_roleID = Roles.roleID "
         "WHERE Accounts.username = ?", (f_username,)
     ).fetchone()
+    try:
+        if account[9] == None:
+            laccount = list(account)
+            laccount[9] = 'No Email'
+            account = tuple(laccount)
+    except:
+        raise Exception(
+            "IN 'print_account_data()': Account {} does not exist"
+            .format(f_username)
+        )
     return account 
 
 def db_print_account_data(f_username: str) -> None:
@@ -491,15 +534,17 @@ def db_print_account_data(f_username: str) -> None:
         "School ID: {}\n"
         "School Name: {}\n"
         "Role ID: {}\n"
-        "Role Name: {}\n".format(loggedIn[0],
-                                    loggedIn[1],
-                                    loggedIn[2],
-                                    loggedIn[3],
-                                    loggedIn[4],
-                                    loggedIn[5],
-                                    loggedIn[6],
-                                    loggedIn[7],
-                                    loggedIn[8]))
+        "Role Name: {}\n"
+        "Email: {}\n".format(loggedIn[0],
+                             loggedIn[1],
+                             loggedIn[2],
+                             loggedIn[3],
+                             loggedIn[4],
+                             loggedIn[5],
+                             loggedIn[6],
+                             loggedIn[7],
+                             loggedIn[8],
+                             loggedIn[9]))
 
 def db_send_message(f_userFrom: str,
                     f_userTo:   str,
@@ -551,7 +596,14 @@ def db_read_messages_between(f_userFrom: str,
                                                               str, 
                                                               str, 
                                                               str]]:
-    # Get the list of messages as a list of tuples containing message data
+    '''
+    This function is used to return the messages between two users.
+
+    :param str f_userFrom: The user sending the messages
+    :param str f_userTo: The user recieving the messages
+    :return list[tuple[str, str, str, str]]: A list of tuples that contain mess-
+        age data, in the format specified at the begining of the file
+    '''
     messages = dbCursor.execute(
         "SELECT Accounts_senderID, Accounts_recieverID, body, timestamp "
         "FROM Messages "
@@ -562,6 +614,20 @@ def db_read_messages_between(f_userFrom: str,
     return messages
 
 
+def db_check_username_exists(f_username: str) -> bool:
+    '''
+    This function is used to check if a username exists in the database.
+
+    :param str f_username: The username to check
+    :return bool: True or False, depending on if the username is in the database
+    '''
+    exists = dbCursor.execute(
+        "SELECT COUNT(1) "
+        "FROM Accounts "
+        "WHERE Username = ?", (f_username,)
+    ).fetchone()[0]
+    return bool(exists)
+
 if __name__ == "__main__":
     '''
     Example usage of some of the above functions, some of these may fail depend-
@@ -571,6 +637,7 @@ if __name__ == "__main__":
     is going on in some of the functions.
     '''
     try:
+        debug = True
         # ----------------------------------------------------------------------
         # Create an account examples
         # ----------------------------------------------------------------------
@@ -588,6 +655,14 @@ if __name__ == "__main__":
         #                    '2000-05-12', 
         #                    'London', 
         #                    2)
+        # db_create_account('Eric', 
+        #                    'Professorson', 
+        #                    'coventryteacher', 
+        #                    '582874', 
+        #                    '1964-05-12', 
+        #                    'London', 
+        #                    2,
+        #                    "email@test.com")
         # db_create_account('Elizabeth',
         #                     'Brummie',
         #                     'iLoveBirmingham!',
@@ -608,9 +683,9 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # Check username/password combinations example
         # ----------------------------------------------------------------------
-        # Correct password
+        # # Correct password
         # print(db_check_account_login('JimmCric582874', 'ilovepeas'))
-        # Incorrect password
+        # # Incorrect password
         # print(db_check_account_login('JimmCric582874', 'ilovepeasWRONG'))
 
         # ----------------------------------------------------------------------
@@ -629,8 +704,10 @@ if __name__ == "__main__":
         # ----------------------------------------------------------------------
         # Print account data example (debug)
         # ----------------------------------------------------------------------
-        # db_print_account_data("JimmCric582874")
-        # db_print_account_data("TeacCovs582874")
+        db_print_account_data("JimmCric582874")
+        db_print_account_data("TeacCovs582874")
+        db_print_account_data("EricProf582874")
+        db_print_account_data("JohnSmit829854")
 
         # ----------------------------------------------------------------------
         # Get teacher from username example
@@ -719,9 +796,36 @@ if __name__ == "__main__":
         #     print("The stored and calculated TOTP secrets are equal")
 
         # ----------------------------------------------------------------------
+        # Get teachers from school
+        # ----------------------------------------------------------------------
+        # teachers = db_get_teachers_from_school('Coventry High')
+        # print("Teachers at Coventry High:")
+        # for teacher in teachers:
+        #     print(" - " + teacher)
+
+        # teachers = db_get_teachers_from_school('Birmingham High')
+        # print("Teachers at Birmingham High:")
+        # for teacher in teachers:
+        #     print(" - " + teacher)
+
+        # ----------------------------------------------------------------------
+        # Check username exists example
+        # ----------------------------------------------------------------------
+        # users = ["EricProf582874",
+        #          "ErizProz582874",
+        #          "JameDudl829854",
+        #          "TeacCovs582874",
+        #          "TeacCovs582832",
+        #          "JimmCric582874",
+        #          "JamePoor413413"]
+        
+        # for user in users:
+        #     indb = db_check_username_exists(user)
+        #     print(user + (" in " if indb else " not in ") + "the database")
+
+        # ----------------------------------------------------------------------
         # 
         # ----------------------------------------------------------------------
-        print('')
     except Exception as err:
         print("ERROR:\n", err)
     dbCursor.close()
