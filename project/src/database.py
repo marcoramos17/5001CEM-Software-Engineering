@@ -113,6 +113,31 @@ db_read_messages_between():
 db_check_username_exists():
     Check that a username exists, either true or false
 
+db_create_support_ticket():
+    Creates a support ticket and assigns it to a user
+
+db_read_support_ticket():
+    Reads a specific support ticket
+
+db_get_all_support_tickets():
+    Get all of the tickets in the database
+
+db_get_user_tickets():
+    Get every ticket assigned to a user
+
+db_close_ticket():
+    Close a specific ticket
+
+db_get_forum_posts_from_user():
+    Get all the posts that involve a user
+
+db_get_forum_replies_from_user():
+    Get all forum replies that involve a user
+
+db_get_sar_messages():
+    Get all messages that involve a user, for SAR purposes
+
+
 --------------------------------------------------------------------------------
  - - - - - - - - - - - - - - - - CALLING ORDER - - - - - - - - - - - - - - - - -
 --------------------------------------------------------------------------------
