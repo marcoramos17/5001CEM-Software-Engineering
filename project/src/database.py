@@ -568,9 +568,6 @@ def db_send_message(f_userFrom: str,
     # Ensure that changes are committed to the DB
     db.commit()
     return
-<<<<<<< Updated upstream
-    
-=======
 
 ################################################################################
 ################################################################################
@@ -646,7 +643,6 @@ def db_get_forum_replies(f_postID: int) -> list[tuple[int,
 ################################################################################
 ################################################################################
 
->>>>>>> Stashed changes
 def db_get_inbox_users(f_username: str) -> list[tuple[str]]:
     '''
     This function is used to get the list of users in the DMs section for a giv-
