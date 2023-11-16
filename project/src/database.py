@@ -704,6 +704,12 @@ def db_check_username_exists(f_username: str) -> bool:
     return bool(exists)
 
 def db_create_support_ticket(f_username: str, f_body: str) -> None:
+    '''
+    This function creates a support ticket in the database
+
+    :param str f_username: The username to create ticket under
+    :param str f_body: The ticket contents
+    '''
     dbCursor.execute(
         "INSERT INTO SupportTickets "
         "    (Accounts_username, body) "
@@ -715,6 +721,12 @@ def db_create_support_ticket(f_username: str, f_body: str) -> None:
     return
 
 def db_read_support_ticket(f_ticketID: str) -> tuple[str]:
+    '''
+    This function reads a particular ticket ID
+
+    :param str f_ticketID: The ID of the ticket to grab the information for
+    :return tuple[str]: A tuple containing ticket contents
+    '''
     ticket = dbCursor.execute(
         "SELECT ticketID, Accounts_username, body "
         "FROM SupportTickets "
@@ -724,12 +736,23 @@ def db_read_support_ticket(f_ticketID: str) -> tuple[str]:
     return ticket
 
 def db_get_all_support_tickets() -> list[tuple[str, str, str]]:
+    '''
+    This function gets all support tickets and their information
+    
+    :return list[tuple[str, str, str]]: The ticket information
+    '''
     tickets = dbCursor.execute(
         "SELECT * FROM SupportTickets"
     ).fetchall()
     return tickets
 
-def db_get_user_tickets(f_username: str) -> list[tuple[str]]:
+def db_get_user_tickets(f_username: str) -> list[tuple[str, str, str]]:
+    '''
+    This function returns all of a user's tickets
+
+    :param str f_username: The username to grab the tickets for
+    :return list[tuple[str, str, str]]: The ticket information
+    '''
     tickets = dbCursor.execute(
         "SELECT ticketID, Accounts_username, body "
         "FROM SupportTickets "
@@ -739,6 +762,11 @@ def db_get_user_tickets(f_username: str) -> list[tuple[str]]:
     return tickets
 
 def db_close_ticket(f_ticketID: str) -> None:
+    '''
+    Function to close a ticket (delete from DB)
+
+    :param str f_ticketID: The ticket to close
+    '''
     dbCursor.execute(
         "DELETE FROM SupportTickets "
         "WHERE ticketID = ?",
@@ -753,6 +781,12 @@ def db_get_forum_posts_from_user(f_username: str) -> list[tuple[str,
                                                                 str,
                                                                 str,
                                                                 str]]:
+    '''
+    Function to get all forum posts for a user
+
+    :param str f_username: The username to grab posts for
+    :return list[tuple[str, str, str, str, str]]: The forum post information
+    '''
     posts = dbCursor.execute(
         "SELECT * "
         "FROM ForumItems "
@@ -767,6 +801,12 @@ def db_get_forum_replies_from_user(f_username: str) -> list[tuple[str,
                                                                 str,
                                                                 str,
                                                                 str]]:
+    '''
+    Function to get all forum replies for a user
+
+    :param str f_username: The username to grab replies for
+    :return list[tuple[str, str, str, str, str, str]]: The forum reply data
+    '''
     replies = dbCursor.execute(
         "SELECT * "
         "FROM ForumReplies "
@@ -781,6 +821,11 @@ def db_get_sar_messages(f_username: str) -> list[tuple[str,
                                                         str,
                                                         str,
                                                         str]]:
+    '''
+    Function to get all messages that reference a user, for SAR purposes
+
+    :param str f_username: 
+    '''
     messages = dbCursor.execute(
         "SELECT * "
         "FROM Messages "
