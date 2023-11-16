@@ -989,37 +989,37 @@ if __name__ == "__main__":
         #     print(user + (" in " if indb else " not in ") + "the database")
 
         # ----------------------------------------------------------------------
-        #
+        # FOR JACK
         # ----------------------------------------------------------------------
-        print("\nread support ticket:")
-        print(db_read_support_ticket("4"))
+        # print("\nread support ticket:")
+        # print(db_read_support_ticket("4"))
 
-        print("\nread users tickets:")
-        for item in db_get_user_tickets("JimmCric582874"):
-            print(item)
+        # print("\nread users tickets:")
+        # for item in db_get_user_tickets("JimmCric582874"):
+        #     print(item)
 
-        print("\ncreate ticket:")
-        db_create_support_ticket("JimmCric582874", "ticket create exmpl")
+        # print("\ncreate ticket:")
+        # db_create_support_ticket("JimmCric582874", "ticket create exmpl")
 
-        print("\nread users tickets, again:")
-        for item in db_get_user_tickets("JimmCric582874"):
-            print(item)
+        # print("\nread users tickets, again:")
+        # for item in db_get_user_tickets("JimmCric582874"):
+        #     print(item)
 
-        print("\nget forum posts")
-        for item in db_get_forum_posts_from_user("JimmCric582874"):
-            print(item)
+        # print("\nget forum posts")
+        # for item in db_get_forum_posts_from_user("JimmCric582874"):
+        #     print(item)
 
-        print("\nget forum replies")
-        for item in db_get_forum_replies_from_user("JimmCric582874"):
-            print(item)
+        # print("\nget forum replies")
+        # for item in db_get_forum_replies_from_user("JimmCric582874"):
+        #     print(item)
 
-        print("\nget db messages")
-        for item in db_get_sar_messages("JimmCric582874"):
-            print(item)
+        # print("\nget db messages")
+        # for item in db_get_sar_messages("JimmCric582874"):
+        #     print(item)
 
-        print("\nget all tickets")
-        for item in db_get_all_support_tickets():
-            print(item)
+        # print("\nget all tickets")
+        # for item in db_get_all_support_tickets():
+        #     print(item)
     except Exception as err:
         print("ERROR:\n", err)
     dbCursor.close()
