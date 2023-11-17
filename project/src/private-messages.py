@@ -1,4 +1,4 @@
-from guizero import App, Text
+from guizero import *
 
 def change_message():
     message.value = "Not working you silly goose"
