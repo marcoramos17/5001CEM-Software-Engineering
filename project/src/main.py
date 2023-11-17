@@ -5,6 +5,7 @@ from SupportTickets import *
 from SARForm import *
 from information import *
 import accounts as usr
+from EmailAuthentication import *
 
 userObject: usr.Account
 ####################################################
@@ -800,6 +801,7 @@ def profilesPage(homePg):
         profilesPg.hide()
         ###################################################################################
         def newDetails():
+            global code
             newDetWin.show()
 
             def deleteDet():
@@ -832,6 +834,16 @@ def profilesPage(homePg):
             message3 = Text(newDetWin, text = "Your new password is:")
             newPass = passwordVal()
             message4 = Text(newDetWin, text = newPass)
+
+
+
+
+            message5 = Text(newDetWin, text = "Verify email.")
+            confirmVerify = PushButton(newDetWin, text="Verify?", command=emailAuthentication, args=[userObject.email])
+            codeEnter = TextBox(newDetWin)
+            submit = PushButton(newDetWin, command=checkCode, args=[codeEnter.value])
+
+            
 
             returnBtn = PushButton(newDetWin, text="Return", align="top", command=deleteDet)
 
