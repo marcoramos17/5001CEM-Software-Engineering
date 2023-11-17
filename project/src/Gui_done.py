@@ -2,6 +2,9 @@ import time
 from CaptchaFunction import *
 from guizero import *
 from SupportTickets import *
+from SARForm import *
+from information import *
+
 
 # Takes the input from usernameTB and returns the username
 def submitUsername():
@@ -176,10 +179,10 @@ def homepage():
     loginPg.hide()
     # call info hub 
     def callHub():
-        print("Info Hub")
+        openHome()
 
     def callArticles():
-        print("Articles")
+        openArticles()
         
     def callProfile():
         profilesPage(homePg)
@@ -200,6 +203,7 @@ def homepage():
     headerBox = Box(homePg, width = "fill", align = "top")
     header = Text(headerBox, text="Home", width = "fill", align="left")
     supportTickBtn = PushButton(headerBox, text="Support", align="right", command=supportTicketsForm, args=["LiarnesIphone"])
+    SARBtn = PushButton(headerBox, text="Subject Access Request", align="right", command=SARForm, args=["LiarnesIphone"])
     # infoBox to hold buttons 
     infoBox = Box(homePg, width = "fill", align = "top")
     

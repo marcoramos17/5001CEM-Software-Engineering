@@ -48,6 +48,5 @@ def SARForm(name):
     finalText.hide()
 
     SARFormGUI.display()
-
-SARForm("JimmCric582874") # Test value 
+ # Test value 
 
