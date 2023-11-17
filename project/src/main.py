@@ -6,7 +6,9 @@ from SARForm import *
 from information import *
 import accounts as usr
 
-userObject = None
+userObject: usr.Account
+
+
 
 # Takes the input from usernameTB and returns the username
 def submitUsername():
@@ -271,7 +273,6 @@ def homepage():
 
     def callMinigames():
         Minigames()
-        
     homePg = Window(loginPg, title = "Home Page for {}".format(userObject.username))
     
     ##########################################################################

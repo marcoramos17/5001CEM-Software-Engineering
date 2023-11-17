@@ -1,8 +1,9 @@
 from guizero import *
 from forum import *
 import importlib
+import accounts as usr
 
-userName = "JimmCric582874"
+userObject: usr.Account
 
 def exitFunc():
 
@@ -78,7 +79,7 @@ def writeForum():
         #Grabs text from the textbox#
         message = fTextBox.value
         #Calls function from forum.py#
-        INSERTINTO(userName, " ",message)
+        INSERTINTO(userObject.username, " ", message)
 
         #reloads messages#
         destroyForumMsgs()
@@ -88,7 +89,7 @@ def writeForum():
         allForumMsgs = GETALLMESSAGES()
         msgID = allForumMsgs[x][0]
         message = fTextBox.value
-        INSERTINTOREPLY(msgID, userName, "", message)
+        INSERTINTOREPLY(msgID, userObject.username, "", message)
 
         destroyForumMsgs()
         writeForum()
