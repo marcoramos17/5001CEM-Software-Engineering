@@ -6,6 +6,8 @@ from SARForm import *
 from information import *
 import accounts as usr
 
+userObject = None
+
 # Takes the input from usernameTB and returns the username
 def submitUsername():
     username = usernameTB.value
@@ -32,6 +34,7 @@ def userLogin_username_password_dbUsername_dbPassword(captchaCorrect):
 #If they are, display a correct username/password message and continue to website
 #Else, Print details incorrect and retry details.
 def userLogin(username, password, captchaCorrect, captchaVal,  dbUsername, dbPassword):
+    global userObject
     check1 = False
     check2 = False
     check3 = False
@@ -39,23 +42,23 @@ def userLogin(username, password, captchaCorrect, captchaVal,  dbUsername, dbPas
     print(f"pwd: {password}")
     if captchaVal == captchaCorrect:
         if acCCombo.value == "student":
-            user = usr.StudentAccount(False,
+            userObject = usr.StudentAccount(False,
                                     password=password,
                                     username=username)
         elif acCCombo.value == "teacher":
-            user = usr.ProfessorAccount(False,
+            userObject = usr.ProfessorAccount(False,
                                     password=password,
                                     username=username)
         elif acCCombo.value == "business":
-            user = usr.BusinessAccount(False,
+            userObject = usr.BusinessAccount(False,
                                     password=password,
                                     username=username)
         elif acCCombo.value == "personal":
-            user = usr.PersonalAccount(False,
+            userObject = usr.PersonalAccount(False,
                                     password=password,
                                     username=username)
         elif acCCombo.value == "school":
-            user = usr.SchoolAccount(False,
+            userObject = usr.SchoolAccount(False,
                                     password=password,
                                     username=username)
         homepage()
@@ -75,6 +78,7 @@ def waitingToLogin():
         loggingIn.hide()
     
 def createAccount():
+    global userObject
     loginPg.hide()
     def closeCreateAcc():
         accWindow.hide()
@@ -167,6 +171,7 @@ def createAccount():
 
 #################################################################################
     def  accTypeCreation():
+        global userObject
         user = None
         if accCombo.value == "student":
             user = usr.StudentAccount(True,
@@ -201,7 +206,7 @@ def createAccount():
                                       date_birth=dobTB.value,
                                       access_code=accessCodeTB.value)
         elif accCombo.value == "school":
-            user = usr.SchoolAccount(True,
+            userObject = usr.SchoolAccount(True,
                                       password=passwordTB.value,
                                       fst_name=firstNameTB.value,
                                       lst_name=lastNameTB.value,
@@ -267,7 +272,7 @@ def homepage():
     def callMinigames():
         Minigames()
         
-    homePg = Window(loginPg, title = f"Home Page")
+    homePg = Window(loginPg, title = "Home Page for {}".format(userObject.username))
     
     ##########################################################################
 
@@ -275,7 +280,7 @@ def homepage():
     placeHolder0 = Text(homePg)
     
     headerBox = Box(homePg, width = "fill", align = "top")
-    header = Text(headerBox, text="Home", width = "fill", align="left")
+    header = Text(headerBox, text="{} - Home".format(userObject.username), width = "fill", align="left")
     supportTickBtn = PushButton(headerBox, text="Support", align="right", command=supportTicketsForm, args=["LiarnesIphone"])
     SARBtn = PushButton(headerBox, text="Subject Access Request", align="right", command=SARForm, args=["LiarnesIphone"])
     # infoBox to hold buttons 
@@ -630,9 +635,11 @@ accoutTypeMsg = Text(loginPg, text = "select your account type", align = "top")
 accountTyp = ["student", "teacher", "business", "personal", "school"]
 acCCombo = Combo(loginPgBtn, options = accountTyp, selected = loginPgBtn)
 
-# Submits the username and password in the textboxes 
-continueButton = PushButton(loginPgBtn, text = "Continue", command = userLogin_username_password_dbUsername_dbPassword, args=[captchaCorrect], align = "left", width = "fill")
-
+# Submits the username and password in the textboxes
+try:
+    continueButton = PushButton(loginPgBtn, text = "Continue", command = userLogin_username_password_dbUsername_dbPassword, args=[captchaCorrect], align = "left", width = "fill")
+except:
+    print("could not login")
 # create account button
 CreateAccBtn = PushButton(loginPgBtn, text = "Create Account", command =  createAccount, align = "left", width = "fill")
 

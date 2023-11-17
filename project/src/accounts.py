@@ -64,6 +64,7 @@ class Account:
             print(self.date_birth)
         else:
             print("The password is wrong")
+            raise Exception("Incorrect Password")
         del password
 
 
