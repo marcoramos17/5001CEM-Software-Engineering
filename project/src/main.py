@@ -35,22 +35,32 @@ def userLogin(username, password, captchaCorrect, captchaVal,  dbUsername, dbPas
     check1 = False
     check2 = False
     check3 = False
-    while check1 == False or check2 == False:
-        if username == dbUsername:
-            check1 = True
-            print("check 1")
-        if password == dbPassword:
-            check2 = True
-            print("check 2")
-        if captchaVal == captchaCorrect:
-            check3 = True
-            print("captcha correct")
-        if check1 == True and check2 == True and check3 == True:
-            print("Username and password and captcha are correct")
-            homepage()
-        else:
-            print("Invalid Username or Password")
-            break
+    print(f"usr: {username}")
+    print(f"pwd: {password}")
+    if captchaVal == captchaCorrect:
+        if acCCombo.value == "student":
+            user = usr.StudentAccount(False,
+                                    password=password,
+                                    username=username)
+        elif acCCombo.value == "teacher":
+            user = usr.ProfessorAccount(False,
+                                    password=password,
+                                    username=username)
+        elif acCCombo.value == "business":
+            user = usr.BusinessAccount(False,
+                                    password=password,
+                                    username=username)
+        elif acCCombo.value == "personal":
+            user = usr.PersonalAccount(False,
+                                    password=password,
+                                    username=username)
+        elif acCCombo.value == "school":
+            user = usr.SchoolAccount(False,
+                                    password=password,
+                                    username=username)
+        homepage()
+    else:
+        print("Invalid Username or Password")
         
 
 #continue later to make a mini animation of logging in 
@@ -157,6 +167,7 @@ def createAccount():
 
 #################################################################################
     def  accTypeCreation():
+        user = None
         if accCombo.value == "student":
             user = usr.StudentAccount(True,
                                       password=passwordTB.value,
@@ -197,6 +208,7 @@ def createAccount():
                                       location=locationTB.value,
                                       date_birth=dobTB.value,
                                       access_code=accessCodeTB.value)
+        return user
     # select a background colour
     accoutnTypeMessage = Text(accWindow, text = "select your account type", align = "top")
     accountTypes = ["student", "teacher", "business", "personal", "school"]
@@ -219,7 +231,7 @@ def createAccount():
     #close Window
     closeBtn = PushButton(accWindowBtn, text = "Return to previous Page", command =  closeCreateAcc, align = "left", width = "fill")
     #Confirm details
-    confirm = PushButton(accWindowBtn, text = "Enter", command =  accTypeCreation, align = "left",  width = "fill")
+    user = PushButton(accWindowBtn, text = "Enter", command =  accTypeCreation, align = "left",  width = "fill")
     # empty box to create a space to the left of the buttons 
     pH2 = Box(accWindowBtn, width = "fill", align = "left")
     ######################################################################
@@ -232,7 +244,7 @@ def createAccount():
     # creates a blank gap 
     placeHolder2 = Text(accWindow)
     guestAccBtn = PushButton(accWindow, text = "Guest login", command = guestLogin )
-    
+    return user
 ################################################################################
 ################################# Home Page ####################################
 ################################################################################
@@ -255,7 +267,7 @@ def homepage():
     def callMinigames():
         Minigames()
         
-    homePg = Window(loginPg, title = "Home Page")
+    homePg = Window(loginPg, title = f"Home Page")
     
     ##########################################################################
 
@@ -612,6 +624,11 @@ captchaCorrect = captchaGeneration()
 captchaPic = Picture(loginPgBtn, image = "CAPTCHA.png", align = "top")
 
 captchaTB = TextBox(loginPgBtn, width = "40", align = "top")
+
+# select a background colour
+accoutTypeMsg = Text(loginPg, text = "select your account type", align = "top")
+accountTyp = ["student", "teacher", "business", "personal", "school"]
+acCCombo = Combo(loginPgBtn, options = accountTyp, selected = loginPgBtn)
 
 # Submits the username and password in the textboxes 
 continueButton = PushButton(loginPgBtn, text = "Continue", command = userLogin_username_password_dbUsername_dbPassword, args=[captchaCorrect], align = "left", width = "fill")

@@ -98,6 +98,8 @@ class PersonalAccount(Account):
                          date_birth = date_birth,
                          access_code = access_code,
                          location = location)
+        print(f"In Class Personal Usr: {username}")
+        print(f"In Class Personal Pwd: {password}")
 
 
 class ProfessorAccount(PersonalAccount):
@@ -121,7 +123,6 @@ class StudentAccount(PersonalAccount):
     (include the ability to complete quizzes or minigames) """
     def __init__(self, is_new, password, username = "", access_code = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
-        self.role_id = 1
         super().__init__(is_new,
                          password = password,
                          username = username,
@@ -130,6 +131,9 @@ class StudentAccount(PersonalAccount):
                          access_code = access_code,
                          date_birth = date_birth,
                          location = location)
+        self.role_id = 1
+        print(f"In Class St Usr: {username}")
+        print(f"In Class St Pwd: {password}")
 
 
 
