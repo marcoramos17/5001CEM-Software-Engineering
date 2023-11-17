@@ -7,7 +7,8 @@ class Account:
     """
 
     def __init__(self, is_new, password, fst_name = "", lst_name = "",
-                access_code = "", date_birth = "", location = "", username = ""):
+                access_code = "", date_birth = "", 
+                location = "", username = "", email = ""):
         """
         Constructor for the Account objects
         """
