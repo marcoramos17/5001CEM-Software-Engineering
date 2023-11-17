@@ -7,11 +7,12 @@ from information import *
 import accounts as usr
 
 userObject: usr.Account
+####################################################
+######AIDEN#########
 
-from guizero import *
 from forum import *
 import importlib
-import accounts as usr
+
 
 def exitFunc():
 
@@ -88,7 +89,6 @@ def writeForum():
         message = fTextBox.value
         #Calls function from forum.py#
         INSERTINTO(userObject.username, " ", message)
-
         #reloads messages#
         destroyForumMsgs()
         writeForum()
@@ -340,6 +340,13 @@ forumOpened = 0
 aPOpened = 0
 articlesOpened = 0
 
+
+
+####################################################################
+########AIDEN END #########################
+
+
+
 #Displays home (main window)
 
 # Takes the input from usernameTB and returns the username
@@ -410,7 +417,6 @@ def waitingToLogin():
         loggingIn.hide()
         loggingIn = Text(loginPg, text = "Logging In ...")
         loggingIn.hide()
-    
 def createAccount():
     global userObject
     loginPg.hide()
@@ -564,7 +570,6 @@ def createAccount():
     ######################################################################
     # A box to hold all the buttons 
     accWindowBtn = Box(accWindow, width = "fill", align = "top")
-    
     # empty box to create a space to the left of the buttons 
     pH1 = Box(accWindowBtn, width = "fill", align = "left")
     #close Window
