@@ -492,6 +492,10 @@ def createAccount():
     lastName = Text(accWindow, text="Enter your Last name")
     lastNameTB = TextBox(accWindow, width=40)
 
+    # email
+    email = Text(accWindow, text="Enter your Email")
+    emailTB = TextBox(accWindow, width=40)
+
     #password textbox
     password = Text(accWindow, text="Enter your Password")
     passwordTB = TextBox(accWindow, width=40)

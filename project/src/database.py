@@ -540,7 +540,7 @@ def db_read_account_data(f_username: str) -> tuple [str,
             "IN 'print_account_data()': Account {} does not exist"
             .format(f_username)
         )
-    return account
+    return account # type: ignore
 
 def db_print_account_data(f_username: str) -> None:
     """
@@ -862,6 +862,15 @@ def db_get_sar_messages(f_username: str) -> list[tuple[str,
         (f_username, f_username)
     ).fetchall()
     return messages
+
+def db_get_username_from_email(f_email: str) -> str:
+    email = dbCursor.execute(
+        "SELECT username "
+        "FROM Accounts "
+        "WHERE email = ?",
+        (f_email,)
+    ).fetchone()
+    return email[0]
 
 if __name__ == "__main__":
     '''
