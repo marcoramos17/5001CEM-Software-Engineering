@@ -1,5 +1,6 @@
 from guizero import *
 from forum import *
+import importlib
 
 userName = "JimmCric582874"
 
@@ -10,7 +11,9 @@ def exitFunc():
     articles.hide()
     forum.hide()
 
-    
+def loadAnimalClassifier():
+
+    importlib.import_module("guiAnimalClassifier")  
 
 def writeProfile(textDir, imageDir):
 
@@ -291,6 +294,9 @@ apMenuButton1 = PushButton(apMenu, command=openHome, text="     Home      ", ali
 apMenuButton2 = PushButton(apMenu, command=openArticles, text="   Articles    ", align="left", width="fill")
 apMenuButton3 = PushButton(apMenu, command=openForum, text="     Forum     ", align="left", width="fill") 
 apMenuButton4 = PushButton(apMenu, command=exitFunc, text="     Exit      ", align="left", width="fill")
+
+
+animalClaassifierButton = PushButton(animalProfiles, text="Animal Classifier", command=loadAnimalClassifier, align="bottom")
 
     
     
