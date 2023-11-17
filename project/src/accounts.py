@@ -70,7 +70,7 @@ class Account:
 class CollectiveAccount(Account):
     """" Class for collective account processes
     (i.e. accounts that aren't managed by a single person) """
-    def __init__(self, is_new, password, username = "",
+    def __init__(self, is_new, password, username = "",  access_code = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.access_code = "100000"
         self.role_id = 3
@@ -119,7 +119,7 @@ class ProfessorAccount(PersonalAccount):
 class StudentAccount(PersonalAccount):
     """" Class for student account processes
     (include the ability to complete quizzes or minigames) """
-    def __init__(self, is_new, password, username = "",
+    def __init__(self, is_new, password, username = "", access_code = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.role_id = 1
         super().__init__(is_new,
@@ -140,7 +140,7 @@ class GuestAccount(PersonalAccount):
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         #self.access_code = "999999"
         self.role_id = 5
-        super(Account).__init__(is_new, password, username, fst_name, lst_name,
+        super().__init__(is_new, password, username, fst_name, lst_name,
                         self.access_code, date_birth, location)
 
     def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
@@ -152,7 +152,7 @@ class GuestAccount(PersonalAccount):
 class SchoolAccount(CollectiveAccount):
     """" Class for school management account processes (accounts that own student accounts,
     and represent the school entity)"""
-    def __init__(self, is_new, password, username = "",
+    def __init__(self, is_new, password, username = "", access_code = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.role_id = 4
         super().__init__(is_new,
@@ -166,7 +166,7 @@ class SchoolAccount(CollectiveAccount):
 
 class BusinessAccount(CollectiveAccount):
     """" Class for business account processes (accounts owned by businesses) """
-    def __init__(self, is_new, password, username = "",
+    def __init__(self, is_new, password, username = "", access_code = "",
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         self.role_id = 3
         super().__init__(is_new,
