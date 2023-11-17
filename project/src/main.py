@@ -4,6 +4,7 @@ from guizero import *
 from SupportTickets import *
 from SARForm import *
 from information import *
+import accounts as usr
 
 # Takes the input from usernameTB and returns the username
 def submitUsername():
@@ -128,21 +129,83 @@ def createAccount():
     
     # Main title of window
     createTitle = Text(accWindow, text="Create Account")
-
-    # creates a blank gap 
-    placeHolder1 = Text(accWindow)
     
-    #email textbox
-    email = Text(accWindow, text="Enter your Email")
-    textbox = TextBox(accWindow, width=40)
+    # first name
+    firstName = Text(accWindow, text="Enter your First name")
+    firstNameTB = TextBox(accWindow, width=40)
+
+    # last name
+    lastName = Text(accWindow, text="Enter your Last name")
+    lastNameTB = TextBox(accWindow, width=40)
 
     #password textbox
     password = Text(accWindow, text="Enter your Password")
-    textbox = TextBox(accWindow, width=40)
+    passwordTB = TextBox(accWindow, width=40)
+
+    # location
+    location = Text(accWindow, text="Enter your Location")
+    locationTB = TextBox(accWindow, width=40)   
+
+    # dob
+    dob = Text(accWindow, text="Enter your date of birth")
+    dobTB = TextBox(accWindow, width=40)
+
+    # access code
+    accessCode = Text(accWindow, text="Enter your Access Code")
+    accessCodeTB = TextBox(accWindow, width=40)
+
+
+#################################################################################
+    def  accTypeCreation():
+        if accCombo.value == "student":
+            user = usr.StudentAccount(True,
+                                      password=passwordTB.value,
+                                      fst_name=firstNameTB.value,
+                                      lst_name=lastNameTB.value,
+                                      location=locationTB.value,
+                                      date_birth=dobTB.value,
+                                      access_code=accessCodeTB.value)
+        elif accCombo.value == "teacher":
+            user = usr.ProfessorAccount(True,
+                                      password=passwordTB.value,
+                                      fst_name=firstNameTB.value,
+                                      lst_name=lastNameTB.value,
+                                      location=locationTB.value,
+                                      date_birth=dobTB.value,
+                                      access_code=accessCodeTB.value)
+        elif accCombo.value == "business":
+            user = usr.BusinessAccount(True,
+                                      password=passwordTB.value,
+                                      fst_name=firstNameTB.value,
+                                      lst_name=lastNameTB.value,
+                                      location=locationTB.value,
+                                      date_birth=dobTB.value,
+                                      access_code=accessCodeTB.value)
+        elif accCombo.value == "personal":
+            user = usr.PersonalAccount(True,
+                                      password=passwordTB.value,
+                                      fst_name=firstNameTB.value,
+                                      lst_name=lastNameTB.value,
+                                      location=locationTB.value,
+                                      date_birth=dobTB.value,
+                                      access_code=accessCodeTB.value)
+        elif accCombo.value == "school":
+            user = usr.SchoolAccount(True,
+                                      password=passwordTB.value,
+                                      fst_name=firstNameTB.value,
+                                      lst_name=lastNameTB.value,
+                                      location=locationTB.value,
+                                      date_birth=dobTB.value,
+                                      access_code=accessCodeTB.value)
+    # select a background colour
+    accoutnTypeMessage = Text(accWindow, text = "select your account type", align = "top")
+    accountTypes = ["student", "teacher", "business", "personal", "school"]
+    accCombo = Combo(accWindow, options = accountTypes, selected = accWindow)
+
     
-    #password Confirmation
-    password = Text(accWindow, text="Re-enter your Password")
-    textbox = TextBox(accWindow, width=40)
+
+#################################################################################
+
 
     # creates a blank gap 
     placeHolder2 = Text(accWindow)
@@ -156,7 +219,7 @@ def createAccount():
     #close Window
     closeBtn = PushButton(accWindowBtn, text = "Return to previous Page", command =  closeCreateAcc, align = "left", width = "fill")
     #Confirm details
-    confirm = PushButton(accWindowBtn, text = "Enter", command =  saveDetails, align = "left",  width = "fill")
+    confirm = PushButton(accWindowBtn, text = "Enter", command =  accTypeCreation, align = "left",  width = "fill")
     # empty box to create a space to the left of the buttons 
     pH2 = Box(accWindowBtn, width = "fill", align = "left")
     ######################################################################
