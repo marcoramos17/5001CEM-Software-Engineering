@@ -28,5 +28,5 @@ def userAccountCheck(accountName):
         else:
             print("Code is not accepted, please try again\n")
 
-userAccountGeneration("JimmCric582874")
-userAccountCheck("JimmCric582874")
+#userAccountGeneration("JimmCric582874") # Test value
+#userAccountCheck("JimmCric582874") # Test value

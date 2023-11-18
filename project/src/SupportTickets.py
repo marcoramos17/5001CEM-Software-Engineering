@@ -29,3 +29,4 @@ def supportTicketAdminDelete(ticketID): # This function must be called manually 
       db.db_close_ticket(ticketID)
 
       
+#supportTicketsForm("Jack")
