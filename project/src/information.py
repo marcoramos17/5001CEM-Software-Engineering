@@ -55,8 +55,8 @@ def writeProfile(textDir, imageDir):
     
 def writeProfileLink(textDir, imageDir):
     
-    textDir = "text/" + textDir
-    imageDir = "images/" + imageDir
+    textDir = "C:/Users/aiden/Uni Work/Software Engineering/GITHUB/code/5001CEM/text/" + textDir
+    imageDir = "C:/Users/aiden/Uni Work/Software Engineering/GITHUB/code/5001CEM/images/" + imageDir
     
     file = open(textDir, "r")
     extractText = file.readline()
@@ -142,7 +142,7 @@ def writeForum():
     
 def writeArticleLink(articleDir):
     
-    articleDir = "articles/" + articleDir
+    articleDir = "C:/Users/aiden/Uni Work/Software Engineering/GITHUB/code/5001CEM/articles/" + articleDir
     
     file = open(articleDir, "r")
     extractHeader = file.readline()

@@ -2,6 +2,7 @@
 
 from guizero import *
 from main import *
+from forum import *
 
 def writeProfile(textDir, imageDir):
 

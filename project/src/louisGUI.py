@@ -364,7 +364,7 @@ def profilesPage():
 
         #picture
         # reference this
-        notificationsPic = Picture(notificationsPg, image = "notifications.png")
+        notificationsPic = Picture(notificationsPg, image = "C:/Users/aiden/Uni Work/Software Engineering/GITHUB/code/5001CEM/images/laughingugly.gif")
 
     profilesPg = Window(loginPg, title = "Profiles Page")
     

@@ -1,6 +1,5 @@
 ### FORUM ###
 #Import for mySQL connection#
-import mysql.connector
 import database as db
 #Import to get time#
 import time
