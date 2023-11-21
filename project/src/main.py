@@ -711,12 +711,13 @@ def profilesPage(homePg):
             profileWin.show()
             customisationPg.hide()
             def deleteProf():
+                    usernameBox.destroy()
+                    bioBox.destroy()
                     message1.destroy()
                     message2.destroy()
-                    message3.destroy()
-                    message4.destroy()
+                    pHText.destroy()
                     placeHolder0.destroy()
-                    profilePic.destroy()
+                    #profilePic.destroy()
                     placeHolder1.destroy()
                     returnBtn.destroy()
 
@@ -741,15 +742,18 @@ def profilesPage(homePg):
             def returnProf():
                     profileWin.hide()
                     customisationPg.show()
-                    
-            message1 = Text(profileWin, text = "Your display name is:")
-            newDisplayName = displayNameVal()
-            message2 = Text(profileWin, text = newDisplayName)
 
-            
-            message3 = Text(profileWin, text = "Your new bio is")
+            usernameBox = Box(profileWin, width = "fill", align = "top")
+            usernameBox.bg = "black"
+            newDisplayName = displayNameVal()
+            message1 = Text(usernameBox, text = newDisplayName, color = "white")
+
+            pHText = Text(profileWin, text = "")
+
+            bioBox = Box(profileWin, width = "fill", align = "top")
+            bioBox.bg = "black"
             newBio = bioVal()
-            message4 = Text(profileWin, text = newBio)
+            message2 = Text(bioBox, text = newBio, color = "white")
 
             # creates a blank gap 
             placeHolder0 = Text(profileWin)
@@ -770,7 +774,13 @@ def profilesPage(homePg):
             
         #box to contain it all
         chngeDetBox = Box(customisationPg, width = "fill", align = "top")
-            
+
+        #current username
+        currentDetBox = Box(chngeDetBox, width = "fill", align = "top")
+        currentDetBox.bg = "black"
+        currentDisplayName = userObject.username
+        currentDisplayNameTxt = Text(currentDetBox, text = currentDisplayName, align = "top", color = "white")
+        
         # display name text box 
         displayName = Text(chngeDetBox, text = "Enter your display name", align = "top")
         displayNameTB = TextBox(chngeDetBox, width = "40", align = "top")
@@ -805,10 +815,11 @@ def profilesPage(homePg):
             newDetWin.show()
 
             def deleteDet():
+                emailBox.destroy()
+                passwordBox.destroy()
                 message1.destroy()
                 message2.destroy()
-                message3.destroy()
-                message4.destroy()
+                pHText.destroy()
                 returnBtn.destroy()
                 
                 newDetWin.hide()
@@ -824,34 +835,42 @@ def profilesPage(homePg):
                 newPass = passwordTB.value
                 return newPass
 
+            def callEmailAuthentication():
+                try:
+                    emailAuthentication("liamtrodden28@gmail.com")
+                except:
+                    pass
+
             #def NewPassword():
                 
-
-            message1 = Text(newDetWin, text = "Your new email is:")
+            emailBox = Box(newDetWin, width = "fill", align = "top")
+            emailBox.bg = "black"
             emailAdd = emailVal()
-            message2 = Text(newDetWin, text = emailAdd)
+            message1 = Text(emailBox, text = emailAdd, color = "white")
 
-            message3 = Text(newDetWin, text = "Your new password is:")
+            pHText = Text(newDetWin, text = "")
+
+            passwordBox = Box(newDetWin, width = "fill", align = "top")
+            passwordBox.bg = "black"
             newPass = passwordVal()
-            message4 = Text(newDetWin, text = newPass)
+            message2 = Text(passwordBox, text = newPass, color = "white")
 
 
-
-
-            message5 = Text(newDetWin, text = "Verify email.")
-            confirmVerify = PushButton(newDetWin, text="Verify?", command=emailAuthentication, args=[userObject.email])
-            codeEnter = TextBox(newDetWin)
-            submit = PushButton(newDetWin, command=checkCode, args=[codeEnter.value])
+            #message3 = Text(newDetWin, text = "Verify email.")
+            #confirmVerify = PushButton(newDetWin, text="Verify?", command=callEmailAuthentication)
+            #codeEnter = TextBox(newDetWin)
+            #submit = PushButton(newDetWin, text = "submit", command=checkCode, args=[codeEnter.value])
 
             
 
             returnBtn = PushButton(newDetWin, text="Return", align="top", command=deleteDet)
 
+
+        ###################################################################################
         def returnDet():
             detailsPg.hide()
             profilesPg.show()
-        ###################################################################################
-        
+            
         detailsPg = Window(loginPg, title = "Details Page")
 
         # view new details
@@ -859,6 +878,10 @@ def profilesPage(homePg):
         newDetWin.hide()
        
         # load current details
+        currentEmailBox = Box(detailsPg, width = "fill", align = "top")
+        currentEmailBox.bg = "black"
+        currentEmail = userObject.email
+        currentEmailTxt = Text(currentEmailBox, text = currentEmail, align = "top", color = "white")
 
         # change email
         emailTxt = Text(detailsPg, text = "Type your new email address here", align = "top")
@@ -906,7 +929,7 @@ def profilesPage(homePg):
     profilePgTxt = Text(profilesPg, text = "Edit Your Profile")
 
     # Box to hold buttons 
-    Box1 = Box(profilesPg, width = "fill", align = "left")
+    Box1 = Box(profilesPg, width = "fill", align = "top")
 
     # empty box to create a space to the left of the buttons 
     pH1 = Box(Box1, width = "fill", align = "left")
@@ -922,22 +945,12 @@ def profilesPage(homePg):
 
     # empty box to create a space to the left of the buttons 
     pH2 = Box(Box1, width = "fill", align = "left")
-    ############################################################################################################
 
-    ############################################################################################################
-    # Box2
-    Box2 = Box(profilesPg, width = "fill", align = "top")
-    
-    # empty box to create a space to the left of the buttons 
-    pH3 = Box(Box2, width = "fill", align = "left")
-    
     # return button
-    returnBtn = PushButton(Box2, text = "return", command = returnHome, align = "left", width = "fill")
-
-    # empty box to create a space to the left of the buttons 
-    pH4 = Box(Box2, width = "fill", align = "left")
+    returnBtn = PushButton(profilesPg, text = "return", command = returnHome, align = "top", width = "fill")
+    ############################################################################################################
     
-    ################################################################################
+
 
 ####################################################################################
 ############################ minigames #############################################
@@ -976,16 +989,13 @@ placeHolder2 = Text(loginPg)
 # A box to hold all the buttons 
 loginPgBtn = Box(loginPg, width = "fill", align = "top")
 
-# empty box to create a space to the left of the buttons 
-pH1 = Box(loginPgBtn, width = "fill", align = "left")
-
 captchaCorrect = captchaGeneration()
 captchaPic = Picture(loginPgBtn, image = "CAPTCHA.png", align = "top")
 
 captchaTB = TextBox(loginPgBtn, width = "40", align = "top")
 
 # select a background colour
-accoutTypeMsg = Text(loginPg, text = "select your account type", align = "top")
+accoutTypeMsg = Text(loginPgBtn, text = "select your account type", align = "top")
 accountTyp = ["student", "teacher", "business", "personal", "school"]
 acCCombo = Combo(loginPgBtn, options = accountTyp, selected = loginPgBtn)
 
@@ -997,9 +1007,8 @@ except:
 # create account button
 CreateAccBtn = PushButton(loginPgBtn, text = "Create Account", command =  createAccount, align = "left", width = "fill")
 
-homeBtn = PushButton(loginPgBtn, text = "home", command =  homepage, align = "left", width = "fill")
-# empty box to create a space to the right of the buttons
-pH2 = Box(loginPgBtn, width = "fill", align = "left")
+#homeBtn = PushButton(loginPgBtn, text = "home", command =  homepage, align = "left", width = "fill")
+#profileBtn = PushButton(loginPgBtn, text = "profile", command = profilesPage, args = [home])
 ###########################################################################
 
 

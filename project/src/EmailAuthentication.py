@@ -4,13 +4,8 @@ import random
 
 # https://realpython.com/python-send-email/
 # Documention above is key
-global codeGlo
-global messageGlo
 
 def emailAuthentication(userEmail):
-    
-    global codeGlo
-    global messageGlo
 
     x = str(random.getrandbits(128))
     codeGlo = x[0:6]
@@ -29,8 +24,6 @@ def emailAuthentication(userEmail):
     
 
 def checkCode(codePass):
-    
-    global codeGlo
     if codeGlo == codePass:
         print("TRUE")
     else:
