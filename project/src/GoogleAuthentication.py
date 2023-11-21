@@ -7,7 +7,10 @@ import database as db
 # Documentation above is key
 
 def userAccountGeneration(accountName):
-    if db.db_get_user_secret(accountName) == None:
+    try: # Tries this section to see if error occurs which means there is no secret for the account
+        if db.db_get_user_secret(accountName) == None:
+            pass
+    except TypeError: # If there is no secret, this code generates it while excepting the occured error
         RNGSecretGeneration = pyotp.random_base32()
         RNGSecretTOTP = pyotp.TOTP(RNGSecretGeneration) 
         db.db_update_user_secret(accountName, RNGSecretTOTP)
@@ -16,7 +19,6 @@ def userAccountGeneration(accountName):
             qrCodeImage.save(qr)
     else:
         print("Secret is already generated")
-
 def userAccountCheck(accountName):
     RNGSecretTOTP = db.db_get_user_secret(accountName)
     checkLoop = True
@@ -28,5 +30,5 @@ def userAccountCheck(accountName):
         else:
             print("Code is not accepted, please try again\n")
 
-#userAccountGeneration("JimmCric582874") # Test value
+#userAccountGeneration("EricProf582874") # Test value
 #userAccountCheck("JimmCric582874") # Test value
