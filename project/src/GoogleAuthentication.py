@@ -2,6 +2,14 @@ import pyotp
 import qrcode
 import qrcode.image.svg
 import database as db
+import os
+rootDir = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0]
+os.environ['path'] += ";" + rootDir + r"\src\dlls"
+import cairosvg
+
+
+
+
 
 # https://pyauth.github.io/pyotp/#module-pyotp
 # Documentation above is key
@@ -17,6 +25,7 @@ def userAccountGeneration(accountName):
         qrCodeImage = qrcode.make(pyotp.totp.TOTP(RNGSecretGeneration).provisioning_uri(name=accountName, issuer_name="Komodo Hub"), image_factory=qrcode.image.svg.SvgImage)
         with open('qrcode.svg', 'wb') as qr:
             qrCodeImage.save(qr)
+        cairosvg.svg2png(url="qrcode.svg", write_to="output.png")
     else:
         print("Secret is already generated")
 def userAccountCheck(accountName):
@@ -30,5 +39,5 @@ def userAccountCheck(accountName):
         else:
             print("Code is not accepted, please try again\n")
 
-#userAccountGeneration("EricProf582874") # Test value
+userAccountGeneration("EricProf582874") # Test value
 #userAccountCheck("JimmCric582874") # Test value
