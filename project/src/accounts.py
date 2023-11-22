@@ -5,14 +5,17 @@ class Account:
     """
     Class for general account processes
     """
-
+    err = False
     def __init__(self, is_new, password, fst_name = "", lst_name = "",
-                access_code = "", date_birth = "", 
+                access_code = "", date_birth = "", role_id = "",
                 location = "", username = "", email = ""):
         """
         Constructor for the Account objects
         """
-        self.role_id = 1
+        if role_id != "":
+            self.role_id = role_id
+        else:
+            self.role_id = 1
 
         if is_new:
             self.username = dtbase.generate_username(fst_name,lst_name, access_code)
@@ -22,15 +25,17 @@ class Account:
 
             else:
                 print("Temporary Err Message - Account already exists")
+                self.err = True
         else:
             if dtbase.db_check_username_exists(username):
                 self.login(username, password)
             else:
                 print("Temporary Err Message - Account doesn't exists")
+                self.err = True
 
 
     def register(self, fst_name, lst_name, password,
-                access_code, date_birth, location, role_id ):
+                access_code, date_birth, location, role_id, email = ""):
         """ user registration function """
         print("Regular account - registration -> ", fst_name, " ", lst_name)
 
@@ -42,6 +47,7 @@ class Account:
         self.role_id = role_id
         self.username = dtbase.db_create_account(fst_name, lst_name, password,
                                     access_code, date_birth, location, role_id)
+        self.email = email
 
         del password
 
@@ -61,35 +67,51 @@ class Account:
             ###self.school = user_details[6]
             self.role_id = user_details[7]
             self.role = user_details[8]
+            if user_details[9] == None:
+                self.email = "No email"
+            else:
+                self.email = user_details[9]
             print(self.date_birth)
         else:
             print("The password is wrong")
+            self.err = True
+            raise Exception("Incorrect Password")
         del password
+
+    def __bool__(self):
+        if self.err:
+            return False
+        else:
+            return True
 
 
 class CollectiveAccount(Account):
     """" Class for collective account processes
     (i.e. accounts that aren't managed by a single person) """
-    def __init__(self, is_new, password, username = "",
-                fst_name = "", lst_name = "", date_birth = "", location = ""):
+    def __init__(self, is_new, password, username = "",  access_code = "",
+                fst_name = "", lst_name = "", date_birth = "", location = "",
+                role_id = "",email = ""):
         self.access_code = "100000"
-        self.role_id = 3
+        self.role_id = "3"
         super().__init__(is_new,
                          password = password,
                          username = username,
                          fst_name = fst_name,
                          lst_name = lst_name,
                          access_code = self.access_code,
+                         role_id = self.role_id,
                          date_birth = date_birth,
-                         location = location)
+                         location = location,
+                         email=email)
 
 
 class PersonalAccount(Account):
     """" Class for personal account processes
     (i.e. accounts that are managed by a single person) """
     def __init__(self, is_new, password, username = "", access_code = "",
-                fst_name = "", lst_name = "", date_birth = "", location = ""):
-        self.role_id = 6
+                 role_id ="", fst_name = "", lst_name = "", date_birth = "",
+                 location = "", email=""):
+        self.role_id = "6"
         super().__init__(is_new,
                          password = password,
                          username = username,
@@ -97,15 +119,19 @@ class PersonalAccount(Account):
                          lst_name = lst_name,
                          date_birth = date_birth,
                          access_code = access_code,
-                         location = location)
+
+                         role_id = self.role_id,
+                         location = location,
+                         email=email)
 
 
 class ProfessorAccount(PersonalAccount):
     """" Class for professor account processes (include the ability
     to send quizzes and tasks to student accounts) """
     def __init__(self, is_new, password, username = "", access_code = "",
-                fst_name = "", lst_name = "", date_birth = "", location = ""):
-        self.role_id = 2
+                fst_name = "", lst_name = "", date_birth = "", location = "",
+                email=""):
+        self.role_id = "2"
         super().__init__(is_new,
                          password = password,
                          username = username,
@@ -113,15 +139,18 @@ class ProfessorAccount(PersonalAccount):
                          lst_name = lst_name,
                          access_code = access_code,
                          date_birth = date_birth,
-                         location = location)
+                         role_id = self.role_id,
+                         location = location,
+                         email=email)
 
 
 class StudentAccount(PersonalAccount):
     """" Class for student account processes
     (include the ability to complete quizzes or minigames) """
-    def __init__(self, is_new, password, username = "",
-                fst_name = "", lst_name = "", date_birth = "", location = ""):
-        self.role_id = 1
+    def __init__(self, is_new, password, username = "", access_code = "",
+                fst_name = "", lst_name = "", date_birth = "", location = "",
+                email=""):
+        self.role_id = "1"
         super().__init__(is_new,
                          password = password,
                          username = username,
@@ -129,7 +158,10 @@ class StudentAccount(PersonalAccount):
                          lst_name = lst_name,
                          access_code = access_code,
                          date_birth = date_birth,
-                         location = location)
+                         role_id = self.role_id,
+                         location = location,
+                         email=email)
+        
 
 
 
@@ -140,7 +172,7 @@ class GuestAccount(PersonalAccount):
                 fst_name = "", lst_name = "", date_birth = "", location = ""):
         #self.access_code = "999999"
         self.role_id = 5
-        super(Account).__init__(is_new, password, username, fst_name, lst_name,
+        super().__init__(is_new, password, username, fst_name, lst_name,
                         self.access_code, date_birth, location)
 
     def register(self, fst_name, lst_name, password, access_code, date_birth, location, role_id):
@@ -152,8 +184,9 @@ class GuestAccount(PersonalAccount):
 class SchoolAccount(CollectiveAccount):
     """" Class for school management account processes (accounts that own student accounts,
     and represent the school entity)"""
-    def __init__(self, is_new, password, username = "",
-                fst_name = "", lst_name = "", date_birth = "", location = ""):
+    def __init__(self, is_new, password, username = "", access_code = "",
+                fst_name = "", lst_name = "", date_birth = "", location = "",
+                email=""):
         self.role_id = 4
         super().__init__(is_new,
                          password = password,
@@ -162,12 +195,14 @@ class SchoolAccount(CollectiveAccount):
                          lst_name = lst_name,
                          access_code = access_code,
                          date_birth = date_birth,
-                         location = location)
+                         location = location,
+                         email=email)
 
 class BusinessAccount(CollectiveAccount):
     """" Class for business account processes (accounts owned by businesses) """
-    def __init__(self, is_new, password, username = "",
-                fst_name = "", lst_name = "", date_birth = "", location = ""):
+    def __init__(self, is_new, password, username = "", access_code = "",
+                fst_name = "", lst_name = "", date_birth = "", location = "",
+                email=""):
         self.role_id = 3
         super().__init__(is_new,
                          password = password,
@@ -176,4 +211,5 @@ class BusinessAccount(CollectiveAccount):
                          lst_name = lst_name,
                          access_code = access_code,
                          date_birth = date_birth,
-                         location = location)
+                         location = location,
+                         email=email)
