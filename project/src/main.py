@@ -207,7 +207,7 @@ def writeArticles(articleDir):
 
 
   
-def openHome(userObject):
+def openHome():
 
     animalProfiles.hide()
     articles.hide()
@@ -602,7 +602,7 @@ def homepage():
     loginPg.hide()
     # call info hub 
     def callHub():
-        openHome(userObject)
+        openHome()
 
     def callArticles():
         openArticles()
