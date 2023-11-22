@@ -1,0 +1,21 @@
+##=====================================================================##
+##==============================[CAPTCHA]==============================##
+(Documentation written by Marco Ramos)
+
+CAPTCHA: 'project/src/CaptchaFunction.py'
+
+The CAPTCHA functionality (made by Jack) allows us to confirm that the
+user is human.
+
+This feature essentially generates a CAPTCHA image which is then
+displayed on the GUI interace (made by Liam). The user must then input
+what they see in the CAPTCHA image into an input box below the image
+The value is sent as an argument to a function that will then test if
+the answer for the CAPTCHA is correct.
+
+Given that this is correct and the user details are correct, the user
+will be able to login/register.
+
+
+##==============================[CAPTCHA]==============================##
+##=====================================================================##
