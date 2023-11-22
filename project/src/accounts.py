@@ -5,7 +5,7 @@ class Account:
     """
     Class for general account processes
     """
-    err = False
+
     def __init__(self, is_new, password, fst_name = "", lst_name = "",
                 access_code = "", date_birth = "", 
                 location = "", username = "", email = ""):
@@ -22,13 +22,11 @@ class Account:
 
             else:
                 print("Temporary Err Message - Account already exists")
-                self.err = True
         else:
             if dtbase.db_check_username_exists(username):
                 self.login(username, password)
             else:
                 print("Temporary Err Message - Account doesn't exists")
-                self.err = True
 
 
     def register(self, fst_name, lst_name, password,
@@ -71,15 +69,8 @@ class Account:
             print(self.date_birth)
         else:
             print("The password is wrong")
-            self.err = True
             raise Exception("Incorrect Password")
         del password
-
-    def __bool__(self):
-        if self.err:
-            return False
-        else:
-            return True
 
 
 class CollectiveAccount(Account):
@@ -115,9 +106,10 @@ class PersonalAccount(Account):
                          lst_name = lst_name,
                          date_birth = date_birth,
                          access_code = access_code,
-                         role_id = self.role_id,
                          location = location,
                          email=email)
+        print(f"In Class Personal Usr: {username}")
+        print(f"In Class Personal Pwd: {password}")
 
 
 class ProfessorAccount(PersonalAccount):
@@ -144,7 +136,6 @@ class StudentAccount(PersonalAccount):
     def __init__(self, is_new, password, username = "", access_code = "",
                 fst_name = "", lst_name = "", date_birth = "", location = "",
                 email=""):
-        self.role_id = 1
         super().__init__(is_new,
                          password = password,
                          username = username,
@@ -154,7 +145,9 @@ class StudentAccount(PersonalAccount):
                          date_birth = date_birth,
                          location = location,
                          email=email)
-        
+        self.role_id = 1
+        print(f"In Class St Usr: {username}")
+        print(f"In Class St Pwd: {password}")
 
 
 
