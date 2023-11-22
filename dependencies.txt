@@ -1,0 +1,9 @@
+opencv-python
+keras
+tensorflow<2.11
+Pillow
+bcrypt
+numpy
+guizero
+pyotp
+captcha
