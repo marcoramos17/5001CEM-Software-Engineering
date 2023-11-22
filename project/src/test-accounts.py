@@ -10,6 +10,7 @@ class TestAccounts(unittest.TestCase):
     d_birth = "2000-12-31"
     loc = "Coventry"
     usrnm = ""
+    email = "test@email.test"
     def test_account(self):
         ## Account class registration
         reg_user = acc.Account(True,
@@ -18,7 +19,8 @@ class TestAccounts(unittest.TestCase):
                                 lst_name=self.l_name,
                                 access_code=self.code,
                                 date_birth=self.d_birth,
-                                location=self.loc )
+                                location=self.loc,
+                                email=self.email)
         
         
         ## Account class login
@@ -41,6 +43,9 @@ class TestAccounts(unittest.TestCase):
         self.assertEqual(reg_user.role_id, log_user.role_id)
 
         # Deleting Test Account from database
+        print("\n\n################\n##############\n",
+              log_user.fst_name,
+              "\n################\n##############\n\n")
         dbase.dbCursor.execute(
             "DELETE FROM Users "
             "WHERE firstName = ? AND lastName = ? ;",
@@ -68,7 +73,8 @@ class TestAccounts(unittest.TestCase):
                                 fst_name=self.f_name,
                                 lst_name=self.l_name,
                                 date_birth=self.d_birth,
-                                location=self.loc )
+                                location=self.loc,
+                                email=self.email)
         
         
         ## Account class login
@@ -121,7 +127,8 @@ class TestAccounts(unittest.TestCase):
                                 lst_name=self.l_name,
                                 access_code=self.code,
                                 date_birth=self.d_birth,
-                                location=self.loc )
+                                location=self.loc,
+                                email=self.email)
         
         
         ## Account class login
@@ -173,7 +180,8 @@ class TestAccounts(unittest.TestCase):
                                 lst_name=self.l_name,
                                 access_code=self.code,
                                 date_birth=self.d_birth,
-                                location=self.loc )
+                                location=self.loc,
+                                email=self.email)
         
         
         ## Account class login
@@ -225,7 +233,8 @@ class TestAccounts(unittest.TestCase):
                                 lst_name=self.l_name,
                                 access_code=self.code,
                                 date_birth=self.d_birth,
-                                location=self.loc )
+                                location=self.loc,
+                                email=self.email)
         
         
         ## Account class login
@@ -277,7 +286,8 @@ class TestAccounts(unittest.TestCase):
                                 lst_name=self.l_name,
                                 access_code=self.code,
                                 date_birth=self.d_birth,
-                                location=self.loc )
+                                location=self.loc,
+                                email=self.email)
         
         
         ## Account class login
@@ -328,7 +338,8 @@ class TestAccounts(unittest.TestCase):
                                 fst_name=self.f_name,
                                 lst_name=self.l_name,
                                 date_birth=self.d_birth,
-                                location=self.loc )
+                                location=self.loc,
+                                email=self.email)
         
         
         ## Account class login
