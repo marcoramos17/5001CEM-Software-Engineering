@@ -25,6 +25,10 @@ def update_inbox():
         button.visible = False
 
 def update_messages():
+    messages = dtbase.db_read_messages_between("ElizBrum829854",
+                                            "TeacCovs582874")
+    for m in messages:
+        print(m)
     pass
 
 def msg_send(msg_inp):
@@ -98,6 +102,12 @@ def private_message(x):
                     width = 'fill',
                     height = 2,
                     text = "message 7")
+    message_8 = Text(pm_wind,
+                    width = 'fill',
+                    height = 2,
+                    text = "message 8")
+
+    update_messages()
 
 
     pm_wind.show()
