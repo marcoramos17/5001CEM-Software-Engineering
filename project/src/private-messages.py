@@ -24,6 +24,17 @@ def update_inbox():
     for button in message_buttons[size+1:]:
         button.visible = False
 
+def update_messages():
+    pass
+
+def msg_send(msg_inp):
+    print(msg_inp.value)
+    msg_inp.value = ""
+
+def enter_key_press(event):
+    if event.key == "\r":
+        msg_send()
+
 # Private Message Window
 def private_message(x):
     # list of buttons
@@ -39,18 +50,25 @@ def private_message(x):
                         align = 'top',
                         width = 'fill',
                         height = 1)
-    message_input = TextBox(pm_wind,
+    send_box = Box (pm_wind,
+                    width = 'fill',
+                    align = 'bottom')
+    message_input = TextBox(send_box,
                             width = 'fill',
-                            align = 'bottom')
-    send_button = PushButton(pm_wind, 
+                            height = 'fill',
+                            align = 'left')
+    message_input.when_key_pressed = enter_key_press
+    send_button = PushButton(send_box, 
                         text = "Send",
-                        align = 'bottom',
-                        width = 'fill',
-                        height = 1)
+                        align = 'right',
+                        width = 3,
+                        height = 1,
+                        command = msg_send,
+                        args = [message_input])
     message_container = Box(pm_wind,
                             width = 'fill',
                             height = 'fill')
-    
+
     # Messages
     message_1 = Text(pm_wind,
                     width = 'fill',
