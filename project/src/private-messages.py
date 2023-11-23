@@ -68,6 +68,18 @@ def private_message(x):
                     width = 'fill',
                     height = 2,
                     text = "message 4")
+    message_5 = Text(pm_wind,
+                    width = 'fill',
+                    height = 2,
+                    text = "message 5")
+    message_6 = Text(pm_wind,
+                    width = 'fill',
+                    height = 2,
+                    text = "message 6")
+    message_7 = Text(pm_wind,
+                    width = 'fill',
+                    height = 2,
+                    text = "message 7")
 
 
     pm_wind.show()
