@@ -6,6 +6,7 @@ from SARForm import *
 from information import *
 import accounts as usr
 from EmailAuthentication import *
+from GoogleAuthentication import *
 
 userObject: usr.Account
 ####################################################
@@ -207,7 +208,7 @@ def writeArticles(articleDir):
 
 
   
-def openHome():
+def openHome(userObject):
 
     animalProfiles.hide()
     articles.hide()
@@ -602,7 +603,7 @@ def homepage():
     loginPg.hide()
     # call info hub 
     def callHub():
-        openHome()
+        openHome(userObject)
 
     def callArticles():
         openArticles()
@@ -787,7 +788,7 @@ def profilesPage(homePg):
 
         # bio text box
         bio = Text(chngeDetBox, text = "Enter your bio", align = "top")
-        bioTB = TextBox(chngeDetBox, width = "40", align = "top")        
+        bioTB = TextBox(chngeDetBox, width = "40", align = "top")
 
         # creates a blank gap 
         placeHolder1 = Text(chngeDetBox)
@@ -822,6 +823,11 @@ def profilesPage(homePg):
                 pHText.destroy()
                 returnBtn.destroy()
                 
+                qrPic.destroy()
+                message3.destroy()
+                codeEnter.destroy()
+                submit.destroy()
+                
                 newDetWin.hide()
 
             def emailVal():
@@ -841,7 +847,8 @@ def profilesPage(homePg):
                 except:
                     pass
 
-            #def NewPassword():
+            def callQR():
+                print("")
                 
             emailBox = Box(newDetWin, width = "fill", align = "top")
             emailBox.bg = "black"
@@ -855,13 +862,14 @@ def profilesPage(homePg):
             newPass = passwordVal()
             message2 = Text(passwordBox, text = newPass, color = "white")
 
-
-            #message3 = Text(newDetWin, text = "Verify email.")
-            #confirmVerify = PushButton(newDetWin, text="Verify?", command=callEmailAuthentication)
-            #codeEnter = TextBox(newDetWin)
-            #submit = PushButton(newDetWin, text = "submit", command=checkCode, args=[codeEnter.value])
-
+            userAccountGeneration("limbim2")
             
+            #display qr
+            qrPic = Picture(newDetWin,image = "output.png")
+
+            message3 = Text(newDetWin, text = "Submit Authenticator code.")
+            codeEnter = TextBox(newDetWin, width = "40", align = "top")
+            submit = PushButton(newDetWin, text = "submit", command=callQR)
 
             returnBtn = PushButton(newDetWin, text="Return", align="top", command=deleteDet)
 
