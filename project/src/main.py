@@ -208,7 +208,7 @@ def writeArticles(articleDir):
 
 
   
-def openHome(userObject):
+def openHome():
 
     animalProfiles.hide()
     articles.hide()
@@ -223,9 +223,9 @@ def openAnimalProf():
     if aPOpened == 0:
 
         #Generates Profile Links#
-        writeProfileLink("tiger.txt", "tiger.png")
-        writeProfileLink("zebra.txt", "zebra.png")
-        writeProfileLink("lion.txt", "lion.png")
+        writeProfileLink("Komodo.txt", "Komodo.png")
+        writeProfileLink("Orangutan.txt", "Orangutan.png")
+        writeProfileLink("Anoa.txt", "Anoa.png")
 
         aPOpened = 1
 
@@ -603,7 +603,7 @@ def homepage():
     loginPg.hide()
     # call info hub 
     def callHub():
-        openHome(userObject)
+        openHome()
 
     def callArticles():
         openArticles()
@@ -624,7 +624,7 @@ def homepage():
     placeHolder0 = Text(homePg)
     
     headerBox = Box(homePg, width = "fill", align = "top")
-    header = Text(headerBox, text="{} - Home".format(userObject.username), width = "fill", align="left")
+    header = Text(headerBox, text="{} - Komodo Hub".format(userObject.username), width = "fill", align="left")
     supportTickBtn = PushButton(headerBox, text="Support", align="right", command=supportTicketsForm, args=["LiarnesIphone"])
     SARBtn = PushButton(headerBox, text="Subject Access Request", align="right", command=SARForm, args=["LiarnesIphone"])
     # infoBox to hold buttons 
