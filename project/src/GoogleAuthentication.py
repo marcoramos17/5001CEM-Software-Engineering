@@ -24,16 +24,17 @@ def userAccountGeneration(accountName):
         cairosvg.svg2png(url="qrcode.svg", write_to=rootDir+r"\src\output.png")
     else:
         print("Secret is already generated")
-def userAccountCheck(accountName):
+def userAccountCheck(accountName, userCode):
     RNGSecretTOTP = db.db_get_user_secret(accountName)
     checkLoop = True
     while (checkLoop == True):
-        check = input("Enter code\n")
-        if check.replace(" ", "") == RNGSecretTOTP.now():
-            print("Code is acceptable, your account has been verified\n")
+        if userCode.replace(" ", "") == RNGSecretTOTP.now():
+            #print("Code is acceptable, your account has been verified\n")
             checkLoop = False
+            return True
         else:
-            print("Code is not accepted, please try again\n")
+            #print("Code is not accepted, please try again\n")
+            return False
 
 #userAccountGeneration("EricProf582874") # Test value
 #userAccountCheck("JimmCric582874") # Test value
